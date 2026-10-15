@@ -279,6 +279,23 @@ header.nav.scrolled{border-color:var(--line);background:#FFFFFF;box-shadow:0 6px
 .rev .svc-tag{flex:0 0 auto}
 @media(max-width:980px){.rev{height:330px}}
 
+/* review carousel: slide sideways, never stack down */
+.rev-show{position:relative}
+.rev-grid{display:flex!important;grid-template-columns:none!important;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-ms-overflow-style:none;padding:6px 2px 10px;max-width:none!important;justify-content:flex-start!important}
+.rev-grid::-webkit-scrollbar{display:none}
+.rev-grid .rev{flex:0 0 calc((100% - 44px)/3);scroll-snap-align:start}
+.rev-nav{position:absolute;top:46%;z-index:3;width:48px;height:48px;border-radius:50%;border:1px solid var(--line2);background:#fff;color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 24px -10px rgba(60,10,14,.4);transition:transform .2s,background .2s}
+.rev-nav:hover{background:var(--accent);color:#fff;border-color:var(--accent);transform:scale(1.06)}
+.rev-nav svg{width:22px;height:22px}
+.rev-nav.prev{left:-24px}.rev-nav.next{right:-24px}
+.rev-nav[disabled]{opacity:.35;cursor:default;transform:none;background:#fff;color:var(--ink);border-color:var(--line2)}
+.rev-dots{display:flex;justify-content:center;gap:8px;margin-top:14px}
+.rev-dots:empty{display:none}
+.rev-dots button{width:10px;height:10px;border-radius:50%;border:0;background:var(--line2);padding:0;cursor:pointer;transition:background .2s,transform .2s}
+.rev-dots button.on{background:var(--accent);transform:scale(1.25)}
+@media(max-width:980px){.rev-grid .rev{flex-basis:calc((100% - 22px)/2)}.rev-nav.prev{left:-10px}.rev-nav.next{right:-10px}}
+@media(max-width:640px){.rev-grid .rev{flex-basis:100%}.rev-nav{width:42px;height:42px;top:44%}.rev-nav.prev{left:6px}.rev-nav.next{right:6px}}
+
 /* review form + live reviews */
 .rev-grid{grid-template-columns:repeat(auto-fit,minmax(280px,370px));justify-content:center}
 .reviews .gsum{margin-bottom:50px}
@@ -647,13 +664,17 @@ footer{background:#F8F5F5;border-top:1px solid var(--line);padding:70px 0 30px;f
     <div class="gsum reveal" id="revSum" hidden>
       <strong id="revAvg">5.0</strong><span class="stars" id="revStars">★★★★★</span><small id="revCount">Reviews</small>
     </div>
-    <div class="rev-grid" id="revGrid" aria-live="polite"></div>
+    <div class="rev-show" id="revShow">
+      <button class="rev-nav prev" type="button" aria-label="Previous reviews"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <div class="rev-grid" id="revGrid" aria-live="polite"></div>
+      <button class="rev-nav next" type="button" aria-label="Next reviews"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+      <div class="rev-dots" id="revDots"></div>
+    </div>
     <div class="rev-empty reveal" id="revEmpty">
       <span class="stars">★★★★★</span>
       <h3>Be the first to leave a review</h3>
       <p>Worked with Kenan? Tap the button below to share your experience.</p>
     </div>
-    <div class="center" id="revMoreWrap" hidden><button class="btn btn-line" id="revMore" type="button">Show more reviews</button></div>
 
     <div class="center reveal rev-actions">
       <button class="btn btn-silver" id="revOpen" type="button" aria-expanded="false" aria-controls="revPanel"><span aria-hidden="true">★</span>Leave a Review</button>
@@ -875,7 +896,7 @@ footer{background:#F8F5F5;border-top:1px solid var(--line);padding:70px 0 30px;f
     {name:"Jennie Wolf", rating:5, service:"Full 360", date:"2026-10-15T01:05:43Z", text:"Amazing experience working with Ken! He is extremely professional, knowledgeable, and genuinely cares about delivering the best results. His attention to detail, communication, and dedication really set him apart. He goes above and beyond to make sure everything runs smoothly. Highly recommend Ken to anyone looking for someone reliable, hardworking, and exceptional at what he does. Definitely a 5-star experience!"},
   ];
   var grid=document.getElementById('revGrid'),empty=document.getElementById('revEmpty'),sum=document.getElementById('revSum'),
-      moreWrap=document.getElementById('revMoreWrap'),more=document.getElementById('revMore'),all=[],shown=6;
+      all=[];
   function esc(t){return String(t==null?'':t).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function ago(d){var t=new Date(d).getTime();if(!t)return'';var s=(Date.now()-t)/1000,u=[[31536000,'year'],[2592000,'month'],[604800,'week'],[86400,'day'],[3600,'hour'],[60,'minute']];
     for(var i=0;i<u.length;i++){var n=Math.floor(s/u[i][0]);if(n>=1)return n+' '+u[i][1]+(n>1?'s':'')+' ago';}return'Just now';}
@@ -885,14 +906,27 @@ footer{background:#F8F5F5;border-top:1px solid var(--line);padding:70px 0 30px;f
     '<span class="stars" aria-label="'+(+r.rating)+' out of 5 stars">'+starStr(r.rating)+'</span><p style="white-space:pre-line">"'+esc(r.text)+'"</p>'+(r.service?'<div class="svc-tag">'+esc(r.service)+'</div>':'')+'</article>';}
   function render(newIdx){
     empty.hidden=all.length>0;sum.hidden=all.length===0;
-    grid.innerHTML=all.slice(0,shown).map(function(r,i){return card(r,i===newIdx);}).join('');
-    moreWrap.hidden=all.length<=shown;
+    grid.innerHTML=all.map(function(r,i){return card(r,i===newIdx);}).join('');
+    revPages();
     if(all.length){var avg=all.reduce(function(a,r){return a+(+r.rating||0);},0)/all.length;
       document.getElementById('revAvg').textContent=avg.toFixed(1);
       document.getElementById('revStars').textContent=starStr(avg);
       document.getElementById('revCount').textContent=all.length+(all.length===1?' Review':' Reviews');}
   }
-  more.addEventListener('click',function(){shown+=6;render();});
+  var rDots=document.getElementById('revDots'),rPrev=document.querySelector('.rev-nav.prev'),rNext=document.querySelector('.rev-nav.next');
+  function perView(){var c=grid.querySelector('.rev');if(!c)return 1;return Math.max(1,Math.round(grid.clientWidth/(c.offsetWidth+22)));}
+  function pageCount(){return Math.max(1,Math.ceil(all.length/perView()));}
+  function curPage(){return Math.round(grid.scrollLeft/grid.clientWidth);}
+  function revPages(){var n=pageCount();rDots.innerHTML='';
+    for(var i=0;i<n;i++){var d=document.createElement('button');d.type='button';d.setAttribute('aria-label','Reviews page '+(i+1));d.addEventListener('click',(function(i){return function(){goPage(i);};})(i));rDots.appendChild(d);}
+    if(n<2)rDots.innerHTML='';paintRev();}
+  function paintRev(){var p=curPage(),n=pageCount();for(var i=0;i<rDots.children.length;i++)rDots.children[i].classList.toggle('on',i===p);
+    var show=all.length>perView();rPrev.hidden=!show;rNext.hidden=!show;rPrev.disabled=p<=0;rNext.disabled=p>=n-1;}
+  function goPage(i){i=Math.max(0,Math.min(pageCount()-1,i));grid.scrollTo({left:i*grid.clientWidth,behavior:'smooth'});}
+  rPrev.addEventListener('click',function(){goPage(curPage()-1);});
+  rNext.addEventListener('click',function(){goPage(curPage()+1);});
+  grid.addEventListener('scroll',paintRev,{passive:true});
+  window.addEventListener('resize',revPages);
   if(SB_ON){document.getElementById('revOkMsg').textContent='Your review is now live on the page.';var sub=document.querySelector('#revFormWrap .sub');if(sub)sub.textContent='Your review will appear on this page as soon as you submit it.';}
   all=REVIEWS.slice();render();
   if(SB_ON){fetch(API)
