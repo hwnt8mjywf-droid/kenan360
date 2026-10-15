@@ -35,9 +35,12 @@ export default async (req) => {
     await ensureSeed(store);
     const { blobs } = await store.list();
     const items = await Promise.all(blobs.map((b) => store.get(b.key, { type: "json" })));
+    const seen = new Set();
     const reviews = items
       .filter((r) => r && !r.hidden)
       .sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
+      // one review per person: if the same name appears twice, keep the newest
+      .filter((r) => { const k = String(r.name).trim().toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; })
       .map(({ name, rating, service, text, created_at }) => ({ name, rating, service, text, created_at }));
     return json(reviews);
   }
