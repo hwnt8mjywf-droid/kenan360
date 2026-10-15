@@ -272,6 +272,13 @@ header.nav.scrolled{border-color:var(--line);background:#FFFFFF;box-shadow:0 6px
 @media(max-width:640px){.ba-nav.prev{left:8px}.ba-nav.next{right:8px}.ba-nav{width:42px;height:42px}}
 
 .f-quote{font-size:17px;line-height:1.7;color:var(--body);margin:0 0 6px;border-left:3px solid var(--accent);padding-left:18px}
+/* fixed-height review cards: long reviews scroll inside the card */
+.rev{height:360px}
+.rev p{overflow-y:auto;min-height:0;padding-right:8px;scrollbar-width:thin;scrollbar-color:#DCC8CA transparent;overscroll-behavior:contain}
+.rev p::-webkit-scrollbar{width:6px}.rev p::-webkit-scrollbar-thumb{background:#DCC8CA;border-radius:6px}
+.rev .svc-tag{flex:0 0 auto}
+@media(max-width:980px){.rev{height:330px}}
+
 /* review form + live reviews */
 .rev-grid{grid-template-columns:repeat(auto-fit,minmax(280px,370px));justify-content:center}
 .reviews .gsum{margin-bottom:50px}
