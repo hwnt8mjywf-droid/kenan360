@@ -6,7 +6,7 @@ export const handler = async (event) => {
   try {
     connectLambda(event);
     const { payload } = JSON.parse(event.body || "{}");
-    if (!payload || payload.form_name !== "lead") return { statusCode: 200, body: "ignored" };
+    if (!payload || payload.form_name !== "lead") { console.log("crm: ignored form", payload && payload.form_name); return { statusCode: 200, body: "ignored" }; }
     const d = payload.data || {};
     const created_at = payload.created_at || new Date().toISOString();
     const store = getStore({ name: "leads", consistency: "strong" });
@@ -27,6 +27,7 @@ export const handler = async (event) => {
       },
       { onlyIfNew: true }
     );
+    console.log("crm: saved lead", payload.id);
     return { statusCode: 200, body: "saved" };
   } catch (err) {
     console.error("lead save failed", err);
