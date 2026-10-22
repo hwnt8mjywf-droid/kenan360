@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Kenan 360 Leads</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFFFFF;--bg2:#FBF4F4;--line:#EEE2E3;--line2:#DCC8CA;--ink:#1A1112;--body:#5A4C4E;--mute:#7D6F71;--accent:#C8102E;--accent2:#A00D24;--r:10px}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--body);font-family:'Manrope',system-ui,sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2{font-family:'Cinzel',serif;color:var(--ink);margin:0;font-weight:700}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:12px}
+.brand{display:flex;align-items:baseline;gap:10px}
+.brand h1{font-size:20px;letter-spacing:.04em}
+.brand span{font-size:11px;font-weight:800;letter-spacing:.28em;text-transform:uppercase;color:var(--accent)}
+.ghost{background:none;border:1px solid var(--line2);border-radius:999px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s}
+.ghost:hover{background:var(--bg2)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0 16px}
+.stat{border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;background:#fff}
+.stat b{display:block;font-size:26px;color:var(--ink);font-weight:800;line-height:1.1}
+.stat small{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.stat.hot b{color:var(--accent)}
+.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.search{flex:1 1 240px;border:1px solid var(--line2);border-radius:999px;padding:10px 16px;background:#fff;outline:none;transition:border-color .2s,box-shadow .2s}
+.search:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(200,16,46,.12)}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;border:1px solid var(--line2);background:#fff;border-radius:999px;padding:7px 13px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .2s}
+.chip[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip i{font-style:normal;opacity:.6;margin-left:4px}
+.list{display:grid;gap:12px;padding-bottom:40px}
+.lead{border:1px solid var(--line);border-radius:var(--r);background:#fff;padding:16px;transition:box-shadow .25s,transform .25s;animation:in .35s ease both}
+.lead:hover{box-shadow:0 18px 40px -28px rgba(60,10,14,.35)}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.who h2{font-size:18px;letter-spacing:.02em}
+.when{font-size:12.5px;color:var(--mute);margin-top:2px}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.badge::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.s-New{background:#FDECEF;color:var(--accent)}
+.s-Contacted{background:#FFF4DB;color:#9A6A00}
+.s-Consult{background:#E8F0FE;color:#1F55C0}
+.s-Client{background:#E6F6EC;color:#1C7A43}
+.s-Not{background:#F1EEEE;color:#7D6F71}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.tag{font-size:12.5px;background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:3px 9px;color:var(--body)}
+.contact{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.act{display:inline-flex;align-items:center;gap:7px;text-decoration:none;font-size:13.5px;font-weight:700;border-radius:999px;padding:8px 14px;border:1px solid var(--line2);color:var(--ink);background:#fff;transition:all .2s}
+.act:hover{border-color:var(--ink)}
+.act.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.act.primary:hover{background:var(--accent2)}
+.act svg{width:15px;height:15px}
+.row{display:grid;grid-template-columns:200px 1fr;gap:10px;align-items:start}
+select.status{border:1px solid var(--line2);border-radius:8px;padding:9px 10px;background:#fff;cursor:pointer}
+textarea{width:100%;min-height:42px;resize:vertical;border:1px solid var(--line2);border-radius:8px;padding:9px 11px;background:#fff;outline:none;transition:border-color .2s}
+textarea:focus,select.status:focus{border-color:var(--accent);outline:none}
+.foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:12px;color:var(--mute);min-height:18px}
+.del{background:none;border:none;color:var(--mute);font-size:12px;cursor:pointer;padding:2px 0}
+.del:hover{color:var(--accent)}
+.empty{text-align:center;color:var(--mute);padding:48px 16px;border:1px dashed var(--line2);border-radius:var(--r)}
+/* login */
+.gate{min-height:100vh;display:grid;place-items:center;padding:24px 16px;background:linear-gradient(180deg,#fff, var(--bg2))}
+.card{width:100%;max-width:380px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:30px 26px;box-shadow:0 30px 60px -34px rgba(60,10,14,.35);text-align:center}
+.card h1{font-size:24px;margin-bottom:4px}
+.card p{margin:0 0 20px;color:var(--mute);font-size:14px}
+.card input{width:100%;border:1px solid var(--line2);border-radius:10px;padding:12px 14px;outline:none;margin-bottom:12px}
+.card input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(200,16,46,.12)}
+.btn{width:100%;border:none;border-radius:10px;padding:12px;background:var(--accent);color:#fff;font-weight:800;cursor:pointer;transition:background .2s}
+.btn:hover{background:var(--accent2)}
+.err{color:var(--accent);font-size:13px;min-height:18px;margin-top:10px}
+[hidden]{display:none!important}
+@media (max-width:640px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .row{grid-template-columns:1fr}
+  .brand span{display:none}
+}
+</style>
+</head>
+<body>
+
+<section class="gate" id="gate">
+  <form class="card" id="loginForm">
+    <h1>Kenan 360</h1>
+    <p>Lead CRM</p>
+    <input type="password" id="pw" placeholder="Password" autocomplete="current-password" required>
+    <button class="btn" type="submit">Open CRM</button>
+    <div class="err" id="err"></div>
+  </form>
+</section>
+
+<div id="app" hidden>
+  <header>
+    <div class="wrap">
+      <div class="brand"><h1>Kenan 360</h1><span>Leads</span></div>
+      <div style="display:flex;gap:8px">
+        <button class="ghost" id="refresh" type="button">Refresh</button>
+        <button class="ghost" id="logout" type="button">Log out</button>
+      </div>
+    </div>
+  </header>
+  <main class="wrap">
+    <div class="stats" id="stats"></div>
+    <div class="tools">
+      <input class="search" id="q" type="search" placeholder="Search name, phone, email…">
+    </div>
+    <div class="chips" id="chips" style="margin-bottom:16px"></div>
+    <div class="list" id="list"></div>
+  </main>
+</div>
+
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="i-call" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></symbol>
+  <symbol id="i-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></symbol>
+</svg>
+
+<script>
+(function(){
+  var KEY = 'k360crm';
+  var pw = '';
+  try { pw = sessionStorage.getItem(KEY) || localStorage.getItem(KEY) || ''; } catch(e) {}
+  var state = { leads: [], statuses: [], filter: 'All', q: '' };
+  var $ = function(id){ return document.getElementById(id); };
+
+  function api(method, body, query){
+    return fetch('/api/leads' + (query || ''), {
+      method: method,
+      headers: { 'content-type': 'application/json', 'x-crm-key': pw },
+      body: body ? JSON.stringify(body) : undefined
+    }).then(function(r){
+      return r.json().catch(function(){ return {}; }).then(function(d){ if(!r.ok){ var e = new Error(d.error || 'error'); e.status = r.status; throw e; } return d; });
+    });
+  }
+
+  function load(){
+    return api('GET').then(function(d){
+      state.leads = d.leads; state.statuses = d.statuses;
+      $('gate').hidden = true; $('app').hidden = false;
+      render();
+    });
+  }
+
+  $('loginForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    pw = $('pw').value; $('err').textContent = '';
+    load().then(function(){ try { localStorage.setItem(KEY, pw); } catch(e) {} })
+      .catch(function(err){
+        $('err').textContent = err.message === 'not_configured' ? 'CRM password not set up yet in Netlify.' : 'Wrong password.';
+      });
+  });
+  $('logout').addEventListener('click', function(){
+    try { localStorage.removeItem(KEY); sessionStorage.removeItem(KEY); } catch(e) {}
+    pw = ''; $('app').hidden = true; $('gate').hidden = false; $('pw').value = '';
+  });
+  $('refresh').addEventListener('click', function(){ load().catch(function(){}); });
+  $('q').addEventListener('input', function(e){ state.q = e.target.value.toLowerCase().trim(); renderList(); });
+
+  function cls(s){ return 's-' + String(s).split(' ')[0]; }
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function fmtPhone(p){ var d = String(p).replace(/\D/g,''); if(d.length===11&&d[0]==='1') d=d.slice(1); return d.length===10 ? '('+d.slice(0,3)+') '+d.slice(3,6)+'-'+d.slice(6) : p; }
+  function telHref(p){ var d = String(p).replace(/\D/g,''); if(d.length===10) d='1'+d; return '+'+d; }
+  function ago(iso){
+    var t = new Date(iso), s = (Date.now() - t) / 1000;
+    var rel = s < 3600 ? Math.max(1, Math.round(s/60)) + 'm ago' : s < 86400 ? Math.round(s/3600) + 'h ago' : Math.round(s/86400) + 'd ago';
+    return t.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ' · ' + t.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) + ' · ' + rel;
+  }
+
+  function render(){ renderStats(); renderChips(); renderList(); }
+
+  function renderStats(){
+    var L = state.leads, c = function(s){ return L.filter(function(l){ return l.status === s; }).length; };
+    var week = L.filter(function(l){ return Date.now() - new Date(l.created_at) < 7*864e5; }).length;
+    $('stats').innerHTML =
+      '<div class="stat"><b>'+L.length+'</b><small>Total leads</small></div>' +
+      '<div class="stat hot"><b>'+c('New')+'</b><small>Need follow-up</small></div>' +
+      '<div class="stat"><b>'+week+'</b><small>This week</small></div>' +
+      '<div class="stat"><b>'+c('Client')+'</b><small>Became clients</small></div>';
+  }
+
+  function renderChips(){
+    var all = ['All'].concat(state.statuses);
+    $('chips').innerHTML = all.map(function(s){
+      var n = s === 'All' ? state.leads.length : state.leads.filter(function(l){ return l.status === s; }).length;
+      return '<button class="chip" type="button" data-s="'+esc(s)+'" aria-pressed="'+(state.filter===s)+'">'+esc(s)+'<i>'+n+'</i></button>';
+    }).join('');
+  }
+  $('chips').addEventListener('click', function(e){
+    var b = e.target.closest('.chip'); if(!b) return;
+    state.filter = b.dataset.s; renderChips(); renderList();
+  });
+
+  function renderList(){
+    var q = state.q;
+    var items = state.leads.filter(function(l){
+      if(state.filter !== 'All' && l.status !== state.filter) return false;
+      if(!q) return true;
+      return [l.name, l.phone, l.email, l.goal, l.aim, l.notes].join(' ').toLowerCase().indexOf(q) > -1 || String(l.phone).replace(/\D/g,'').indexOf(q.replace(/\D/g,'') || '~') > -1;
+    });
+    if(!items.length){ $('list').innerHTML = '<div class="empty">'+(state.leads.length ? 'No leads match.' : 'No leads yet. New ones from the website show up here automatically.')+'</div>'; return; }
+    $('list').innerHTML = items.map(function(l){
+      var first = (l.name || 'there').split(' ')[0];
+      var sms = 'sms:' + telHref(l.phone) + '?&body=' + encodeURIComponent('Hey ' + first + ', this is Kenan from Kenan 360! Thanks for reaching out about your goals. When works for a quick free consultation?');
+      return '<article class="lead" data-id="'+esc(l.id)+'">' +
+        '<div class="top"><div class="who"><h2>'+esc(l.name || 'No name')+'</h2><div class="when">'+esc(ago(l.created_at))+'</div></div>' +
+        '<span class="badge '+cls(l.status)+'">'+esc(l.status)+'</span></div>' +
+        '<div class="tags">' + [l.goal, l.aim, l.source].filter(Boolean).map(function(t){ return '<span class="tag">'+esc(t)+'</span>'; }).join('') + '</div>' +
+        '<div class="contact">' +
+          (l.phone ? '<a class="act primary" href="'+esc(sms)+'"><svg><use href="#i-text"/></svg>Text</a>' +
+                     '<a class="act" href="tel:'+esc(telHref(l.phone))+'"><svg><use href="#i-call"/></svg>'+esc(fmtPhone(l.phone))+'</a>' : '') +
+          (l.email ? '<a class="act" href="mailto:'+esc(l.email)+'"><svg><use href="#i-mail"/></svg>'+esc(l.email)+'</a>' : '') +
+        '</div>' +
+        '<div class="row"><select class="status" aria-label="Status">' + state.statuses.map(function(s){ return '<option'+(s===l.status?' selected':'')+'>'+esc(s)+'</option>'; }).join('') + '</select>' +
+        '<textarea class="notes" placeholder="Notes (saves automatically)">'+esc(l.notes)+'</textarea></div>' +
+        '<div class="foot"><span class="saved"></span><button class="del" type="button">Delete lead</button></div>' +
+      '</article>';
+    }).join('');
+  }
+
+  function find(id){ return state.leads.filter(function(l){ return l.id === id; })[0]; }
+  function flash(card, msg){ var s = card.querySelector('.saved'); s.textContent = msg; clearTimeout(s._t); s._t = setTimeout(function(){ s.textContent=''; }, 1800); }
+
+  $('list').addEventListener('change', function(e){
+    if(!e.target.classList.contains('status')) return;
+    var card = e.target.closest('.lead'), id = card.dataset.id, val = e.target.value;
+    api('PATCH', { id: id, status: val }).then(function(){
+      find(id).status = val;
+      var b = card.querySelector('.badge'); b.className = 'badge ' + cls(val); b.textContent = val;
+      renderStats(); renderChips(); flash(card, 'Saved');
+    }).catch(function(){ flash(card, 'Could not save — try again'); });
+  });
+
+  var timers = {};
+  $('list').addEventListener('input', function(e){
+    if(!e.target.classList.contains('notes')) return;
+    var card = e.target.closest('.lead'), id = card.dataset.id, val = e.target.value;
+    clearTimeout(timers[id]);
+    flash(card, 'Saving…');
+    timers[id] = setTimeout(function(){
+      api('PATCH', { id: id, notes: val }).then(function(){ find(id).notes = val; flash(card, 'Saved'); })
+        .catch(function(){ flash(card, 'Could not save — try again'); });
+    }, 700);
+  });
+
+  $('list').addEventListener('click', function(e){
+    if(!e.target.classList.contains('del')) return;
+    var card = e.target.closest('.lead'), id = card.dataset.id, l = find(id);
+    if(!confirm('Delete ' + (l.name || 'this lead') + '? This can’t be undone.')) return;
+    api('DELETE', null, '?id=' + encodeURIComponent(id)).then(function(){
+      state.leads = state.leads.filter(function(x){ return x.id !== id; }); render();
+    }).catch(function(){ flash(card, 'Could not delete'); });
+  });
+
+  if(pw) load().catch(function(){ pw=''; try { localStorage.removeItem(KEY); } catch(e) {} });
+})();
+</script>
+</body>
+</html>
