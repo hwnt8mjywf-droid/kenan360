@@ -1,5 +1,5 @@
-// Lead CRM API used by /crm. Every request needs the CRM password
-// (the CRM_PASSWORD environment variable in Netlify) in the x-crm-key header.
+// Lead CRM API used by /crm. If the CRM_PASSWORD environment variable is set in
+// Netlify, every request needs it in the x-crm-key header; if not, it's open.
 // GET    /api/leads        -> all leads, newest first
 // PATCH  /api/leads        -> { id, status?, notes? } update one lead
 // DELETE /api/leads?id=... -> remove one lead
@@ -34,8 +34,8 @@ async function ensureSeed(store) {
 const clean = (v, max) => String(v ?? "").replace(/[\u0000-\u0008\u000b-\u001f]/g, " ").slice(0, max);
 
 export default async (req) => {
-  if (!process.env.CRM_PASSWORD) return json({ error: "not_configured" }, 503);
-  if (!authorized(req)) return json({ error: "unauthorized" }, 401);
+  // No password set in Netlify = CRM is open to anyone with the link.
+  if (process.env.CRM_PASSWORD && !authorized(req)) return json({ error: "unauthorized" }, 401);
 
   const store = getStore({ name: "leads", consistency: "strong" });
 

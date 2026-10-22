@@ -86,7 +86,7 @@ textarea:focus,select.status:focus{border-color:var(--accent);outline:none}
 </head>
 <body>
 
-<section class="gate" id="gate">
+<section class="gate" id="gate" hidden>
   <form class="card" id="loginForm">
     <h1>Kenan 360</h1>
     <p>Lead CRM</p>
@@ -258,7 +258,7 @@ textarea:focus,select.status:focus{border-color:var(--accent);outline:none}
     }).catch(function(){ flash(card, 'Could not delete'); });
   });
 
-  if(pw) load().catch(function(){ pw=''; try { localStorage.removeItem(KEY); } catch(e) {} });
+  load().catch(function(){ pw=''; try { localStorage.removeItem(KEY); } catch(e) {} $('gate').hidden = false; });
 })();
 </script>
 </body>
