@@ -875,6 +875,8 @@ footer{background:#F8F5F5;border-top:1px solid var(--line);padding:70px 0 30px;f
     fd.forEach(function(v,k){if(k!=='bot-field'&&k!=='form-name'&&k!=='subject')data[k]=v;});
     data._subject=subject;data._template='table';data._captcha='false';
     var netlify=fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(fd).toString()}).then(function(r){if(!r.ok)throw 0;return 1;});
+    if(form.id==='leadForm'){var crm={referrer:location.href};fd.forEach(function(v,k){crm[k]=v;});
+      fetch('/api/leads',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify(crm)}).catch(function(){});}
     var mail=fetch(NOTIFY_URL,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(data)}).then(function(r){if(!r.ok)throw 0;return 1;});
     return new Promise(function(res,rej){var done=0,ok=false;function fin(){if(++done===2){ok?res():rej();}}
       netlify.then(function(){ok=true;fin();},fin);mail.then(function(){ok=true;fin();},fin);});

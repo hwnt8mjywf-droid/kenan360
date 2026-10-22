@@ -1,36 +1,22 @@
-// Runs automatically every time a Netlify form on the site is submitted.
-// Lead form submissions are copied into the "leads" store so they show up in /crm.
-import { getStore, connectLambda } from "@netlify/blobs";
+// Backup path: runs automatically after every Netlify form submission and copies
+// lead-form entries into the CRM. The website also saves leads directly through
+// /api/leads; duplicates are skipped because leads are matched by phone number.
+import { getStore } from "@netlify/blobs";
+import { saveLead } from "../lib/save-lead.mjs";
 
-export const handler = async (event) => {
+export default async (req) => {
   try {
-    connectLambda(event);
-    const { payload } = JSON.parse(event.body || "{}");
-    if (!payload || payload.form_name !== "lead") { console.log("crm: ignored form", payload && payload.form_name); return { statusCode: 200, body: "ignored" }; }
+    const { payload } = await req.json();
+    if (!payload || payload.form_name !== "lead") return new Response("ignored");
     const d = payload.data || {};
-    const created_at = payload.created_at || new Date().toISOString();
     const store = getStore({ name: "leads", consistency: "strong" });
-    await store.setJSON(
-      payload.id,
-      {
-        id: payload.id,
-        created_at,
-        name: String(d.first_name || payload.first_name || "").trim(),
-        phone: String(d.phone || "").trim(),
-        email: String(d.email || "").trim(),
-        goal: String(d.goal || "").trim(),
-        aim: String(d.aim || "").trim(),
-        source: String(d.referrer || "").includes("fbclid") ? "Instagram / Facebook" : "Website",
-        status: "New",
-        notes: "",
-        updated_at: created_at,
-      },
-      { onlyIfNew: true }
-    );
-    console.log("crm: saved lead", payload.id);
-    return { statusCode: 200, body: "saved" };
+    const result = await saveLead(store, {
+      name: d.first_name, phone: d.phone, email: d.email, goal: d.goal, aim: d.aim, referrer: d.referrer,
+    });
+    console.log("crm: form hook", result);
+    return new Response(result);
   } catch (err) {
-    console.error("lead save failed", err);
-    return { statusCode: 200, body: "error logged" };
+    console.error("crm: form hook failed", err);
+    return new Response("error");
   }
 };
