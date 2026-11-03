@@ -322,6 +322,22 @@ header.nav.scrolled{border-color:var(--line);background:#FFFFFF;box-shadow:0 6px
 @media(max-width:980px){.rev-grid{grid-template-columns:1fr}}
 
 
+/* boot camp promo */
+.bc{padding:96px 0 0;background:var(--bg)}
+.bc-card{position:relative;overflow:hidden;display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:center;background:linear-gradient(135deg,#FFFFFF 0%,#FBF1F2 100%);border:1px solid var(--line);border-radius:22px;padding:48px 50px;box-shadow:0 30px 60px -38px rgba(60,10,14,.35)}
+.bc-card:before{content:"";position:absolute;width:520px;height:520px;right:-160px;top:-200px;background:radial-gradient(closest-side,rgba(200,16,46,.10),transparent 70%);pointer-events:none}
+.bc-new{display:inline-block;background:var(--gold);color:#1A1112;font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;padding:6px 12px;border-radius:8px;margin-bottom:14px}
+.bc-card h2{font-size:clamp(28px,3.8vw,42px);margin-bottom:12px}
+.bc-card p{margin:0 0 24px;font-size:16.5px;max-width:520px}
+.bc-facts{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:26px}
+.bc-facts span{background:#fff;border:1px solid var(--line2);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:700;color:var(--ink)}
+.bc-price{position:relative;text-align:center;background:#fff;border:2px solid var(--accent);border-radius:18px;padding:30px 24px}
+.bc-price small{display:block;font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
+.bc-price b{display:block;font-family:'Cinzel',serif;font-size:64px;line-height:1.05;color:var(--accent);margin:6px 0 2px}
+.bc-price span{display:block;font-size:14px;color:var(--mute);margin-bottom:18px}
+.bc-price .btn{width:100%}
+@media(max-width:900px){.bc-card{grid-template-columns:1fr;padding:36px 26px;gap:28px}.bc{padding-top:72px}}
+
 /* pricing */
 .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:stretch}
 .plan{border:1px solid var(--line);border-radius:2px;padding:38px 32px;background:var(--card);display:flex;flex-direction:column}
@@ -415,6 +431,7 @@ footer{background:#F8F5F5;border-top:1px solid var(--line);padding:70px 0 30px;f
       <a href="#reviews">Reviews</a>
       <a href="#plans">Coaching</a>
       <a href="#faq">FAQ</a>
+      <a href="/bootcamp/">Boot Camp</a>
     </nav>
     <div class="nav-cta">
       <a class="btn btn-line" href="#start">Free Plan</a>
@@ -431,6 +448,7 @@ footer{background:#F8F5F5;border-top:1px solid var(--line);padding:70px 0 30px;f
   <a href="#reviews">Reviews</a>
   <a href="#plans">Coaching</a>
   <a href="#faq">FAQ</a>
+  <a href="/bootcamp/">Saturday Boot Camp</a>
   <a class="btn btn-silver" href="tel:+18483504771">Call Us Now</a>
 </div>
 
@@ -720,6 +738,27 @@ footer{background:#F8F5F5;border-top:1px solid var(--line);padding:70px 0 30px;f
   </div>
 </section>
 
+<!-- BOOT CAMP -->
+<section class="bc" id="bootcamp">
+  <div class="wrap">
+    <div class="bc-card reveal">
+      <div>
+        <span class="bc-new">New · Starts Nov 14</span>
+        <h2>Saturday Morning Boot Camp</h2>
+        <p>Train with Kenan and a crew that pushes you. A coached group workout for every fitness level, every Saturday morning.</p>
+        <div class="bc-facts"><span>Every Saturday</span><span>10:30 AM</span><span>All levels</span><span>No membership</span></div>
+        <a class="btn btn-line" href="/bootcamp/">See Details <svg><use href="#arrow"/></svg></a>
+      </div>
+      <div class="bc-price">
+        <small>One-time drop-in</small>
+        <b>$25</b>
+        <span>Pay only for the Saturdays you come</span>
+        <a class="btn btn-silver" href="/bootcamp/#signup">Reserve My Spot <svg><use href="#arrow"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- PLANS -->
 <section class="sec" id="plans">
   <div class="wrap">
@@ -808,7 +847,7 @@ footer{background:#F8F5F5;border-top:1px solid var(--line);padding:70px 0 30px;f
         </div>
       </div>
       <div><h4>Services</h4><a href="#services">Lifestyle Coaching</a><a href="#services">Fitness Coaching</a><a href="#services">Fashion</a></div>
-      <div><h4>Explore</h4><a href="#how">How It Works</a><a href="#results">Results</a><a href="#reviews">Reviews</a><a href="#plans">Coaching Plans</a><a href="#faq">FAQ</a></div>
+      <div><h4>Explore</h4><a href="#how">How It Works</a><a href="#results">Results</a><a href="#reviews">Reviews</a><a href="#plans">Coaching Plans</a><a href="#faq">FAQ</a><a href="/bootcamp/">Saturday Boot Camp</a></div>
       <div><h4>Contact</h4><a href="tel:+18483504771">(848) 350-4771</a><a href="mailto:kenanmasic44@gmail.com">kenanmasic44@gmail.com</a><a href="#start">Free Consultation</a></div>
     </div>
     <div class="legal"><span>© 2026 Kenan 360. All rights reserved.</span><span>Fitness × Lifestyle × Fashion</span></div>

@@ -62,6 +62,21 @@ header .wrap{display:flex;align-items:center;justify-content:space-between;heigh
 select.status{border:1px solid var(--line2);border-radius:8px;padding:9px 10px;background:#fff;cursor:pointer}
 textarea{width:100%;min-height:42px;resize:vertical;border:1px solid var(--line2);border-radius:8px;padding:9px 11px;background:#fff;outline:none;transition:border-color .2s}
 textarea:focus,select.status:focus{border-color:var(--accent);outline:none}
+.views{display:flex;gap:6px;margin:18px 0 0;border-bottom:1px solid var(--line)}
+.view{position:relative;background:none;border:0;padding:12px 6px 14px;margin-right:18px;font-weight:800;font-size:15px;color:var(--mute);cursor:pointer;transition:color .2s}
+.view i{font-style:normal;font-size:12px;font-weight:800;background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:1px 8px;margin-left:8px;color:var(--body)}
+.view[aria-selected=true]{color:var(--ink)}
+.view[aria-selected=true]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;border-radius:3px 3px 0 0;background:var(--accent)}
+.view[aria-selected=true] i{background:var(--accent);border-color:var(--accent);color:#fff}
+.sessf{flex:0 1 230px;border:1px solid var(--line2);border-radius:999px;padding:10px 14px;background:#fff;font-weight:600;cursor:pointer}
+.tag.sess{background:#FFF4DB;border-color:#F3DFB0;color:#7A5300;font-weight:700}
+.tag.sess.past{background:#F1EEEE;border-color:var(--line);color:var(--mute);font-weight:600}
+.s-Signed{background:#FDECEF;color:var(--accent)}
+.s-Confirmed{background:#E8F0FE;color:#1F55C0}
+.s-Paid{background:#E6F6EC;color:#1C7A43}
+.s-Attended{background:#E6F6EC;color:#1C7A43}
+.s-No-show{background:#FFF4DB;color:#9A6A00}
+.s-Cancelled{background:#F1EEEE;color:#7D6F71}
 .addnote{display:flex;gap:8px;align-items:flex-start}
 .addnote textarea{flex:1}
 .addbtn{flex:0 0 auto;border:none;border-radius:8px;padding:10px 16px;background:var(--ink);color:#fff;font-weight:700;font-size:13.5px;cursor:pointer;transition:opacity .2s}
@@ -109,7 +124,7 @@ textarea:focus,select.status:focus{border-color:var(--accent);outline:none}
 <div id="app" hidden>
   <header>
     <div class="wrap">
-      <div class="brand"><h1>Kenan 360</h1><span>Leads</span></div>
+      <div class="brand"><h1>Kenan 360</h1><span>CRM</span></div>
       <div style="display:flex;gap:8px">
         <button class="ghost" id="refresh" type="button">Refresh</button>
         <button class="ghost" id="logout" type="button">Log out</button>
@@ -117,9 +132,14 @@ textarea:focus,select.status:focus{border-color:var(--accent);outline:none}
     </div>
   </header>
   <main class="wrap">
+    <nav class="views" id="views" role="tablist" aria-label="CRM sections">
+      <button class="view" type="button" role="tab" data-v="lead" aria-selected="true">Coaching Leads<i id="cLead">0</i></button>
+      <button class="view" type="button" role="tab" data-v="bootcamp" aria-selected="false">Boot Camp<i id="cBoot">0</i></button>
+    </nav>
     <div class="stats" id="stats"></div>
     <div class="tools">
       <input class="search" id="q" type="search" placeholder="Search name, phone, email…">
+      <select class="sessf" id="sessf" aria-label="Filter by Saturday" hidden></select>
     </div>
     <div class="chips" id="chips" style="margin-bottom:16px"></div>
     <div class="list" id="list"></div>
@@ -137,7 +157,9 @@ textarea:focus,select.status:focus{border-color:var(--accent);outline:none}
   var KEY = 'k360crm';
   var pw = '';
   try { pw = sessionStorage.getItem(KEY) || localStorage.getItem(KEY) || ''; } catch(e) {}
-  var state = { leads: [], statuses: [], filter: 'All', q: '' };
+  var state = { leads: [], statuses: [], bootStatuses: [], view: 'lead', filter: 'All', sess: 'All', q: '' };
+  try { if(localStorage.getItem('k360view') === 'bootcamp') state.view = 'bootcamp'; } catch(e) {}
+  if(location.hash === '#bootcamp') state.view = 'bootcamp';
   var $ = function(id){ return document.getElementById(id); };
 
   function api(method, body, query){
@@ -152,7 +174,7 @@ textarea:focus,select.status:focus{border-color:var(--accent);outline:none}
 
   function load(){
     return api('GET').then(function(d){
-      state.leads = d.leads; state.statuses = d.statuses;
+      state.leads = d.leads; state.statuses = d.statuses; state.bootStatuses = d.bootcampStatuses || [];
       $('gate').hidden = true; $('app').hidden = false;
       render();
     });
@@ -183,11 +205,43 @@ textarea:focus,select.status:focus{border-color:var(--accent);outline:none}
     return t.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ' · ' + t.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) + ' · ' + rel;
   }
 
-  function render(){ renderStats(); renderChips(); renderList(); }
+  function render(){ renderViews(); renderStats(); renderChips(); renderSess(); renderList(); }
+
+  // Coaching leads and boot camp sign-ups live in separate tabs.
+  var isBoot = function(){ return state.view === 'bootcamp'; };
+  function ofView(){ return state.leads.filter(function(l){ return (l.kind === 'bootcamp') === isBoot(); }); }
+  function statuses(){ return isBoot() ? state.bootStatuses : state.statuses; }
+  function renderViews(){
+    var nb = state.leads.filter(function(l){ return l.kind === 'bootcamp'; }).length;
+    $('cLead').textContent = state.leads.length - nb; $('cBoot').textContent = nb;
+    document.querySelectorAll('.view').forEach(function(b){ b.setAttribute('aria-selected', String(b.dataset.v === state.view)); });
+    $('q').placeholder = isBoot() ? 'Search boot camp sign-ups…' : 'Search name, phone, email…';
+  }
+  $('views').addEventListener('click', function(e){
+    var b = e.target.closest('.view'); if(!b || b.dataset.v === state.view) return;
+    state.view = b.dataset.v; state.filter = 'All'; state.sess = 'All';
+    try { localStorage.setItem('k360view', state.view); } catch(e) {}
+    render();
+  });
+
+  // Saturdays (YYYY-MM-DD) in Salt Lake City time.
+  function todayMT(){ var p = {}; new Intl.DateTimeFormat('en-US', { timeZone: 'America/Denver', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date()).forEach(function(x){ p[x.type] = x.value; }); return p.year + '-' + p.month + '-' + p.day; }
+  function satLabel(s, long){ return new Date(s + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: long ? 'long' : 'short', month: 'short', day: 'numeric', timeZone: 'UTC' }); }
+  function nextSat(){ var all = {}; ofView().forEach(function(l){ (l.sessions||[]).forEach(function(s){ all[s] = 1; }); }); var t = todayMT();
+    return Object.keys(all).sort().filter(function(s){ return s >= t; })[0]; }
 
   function renderStats(){
-    var L = state.leads, c = function(s){ return L.filter(function(l){ return l.status === s; }).length; };
-    var week = L.filter(function(l){ return Date.now() - new Date(l.created_at) < 7*864e5; }).length;
+    var L = ofView(), c = function(s){ return L.filter(function(l){ return l.status === s; }).length; };
+    var week = L.filter(function(l){ return Date.now() - new Date(l.last_signup || l.created_at) < 7*864e5; }).length;
+    if(isBoot()){
+      var ns = nextSat(), nCount = ns ? L.filter(function(l){ return (l.sessions||[]).indexOf(ns) > -1 && l.status !== 'Cancelled'; }).length : 0;
+      $('stats').innerHTML =
+        '<div class="stat"><b>'+L.length+'</b><small>Total signed up</small></div>' +
+        '<div class="stat hot"><b>'+nCount+'</b><small>'+(ns ? 'Coming ' + esc(satLabel(ns)) : 'Next Saturday')+'</small></div>' +
+        '<div class="stat"><b>'+c('Signed up')+'</b><small>Need confirming</small></div>' +
+        '<div class="stat"><b>'+c('Paid')+'</b><small>Paid</small></div>';
+      return;
+    }
     $('stats').innerHTML =
       '<div class="stat"><b>'+L.length+'</b><small>Total leads</small></div>' +
       '<div class="stat hot"><b>'+c('New')+'</b><small>Need follow-up</small></div>' +
@@ -196,12 +250,23 @@ textarea:focus,select.status:focus{border-color:var(--accent);outline:none}
   }
 
   function renderChips(){
-    var all = ['All'].concat(state.statuses);
+    var L = ofView(), all = ['All'].concat(statuses());
     $('chips').innerHTML = all.map(function(s){
-      var n = s === 'All' ? state.leads.length : state.leads.filter(function(l){ return l.status === s; }).length;
+      var n = s === 'All' ? L.length : L.filter(function(l){ return l.status === s; }).length;
       return '<button class="chip" type="button" data-s="'+esc(s)+'" aria-pressed="'+(state.filter===s)+'">'+esc(s)+'<i>'+n+'</i></button>';
     }).join('');
   }
+
+  function renderSess(){
+    var sel = $('sessf'); sel.hidden = !isBoot(); if(!isBoot()) return;
+    var count = {}; ofView().forEach(function(l){ (l.sessions||[]).forEach(function(s){ count[s] = (count[s]||0) + 1; }); });
+    var days = Object.keys(count).sort(), t = todayMT();
+    if(state.sess !== 'All' && !count[state.sess]) state.sess = 'All';
+    sel.innerHTML = '<option value="All">All Saturdays</option>' + days.map(function(s){
+      return '<option value="'+s+'"'+(s===state.sess?' selected':'')+'>'+esc(satLabel(s))+(s < t ? ' (past)' : '')+' · '+count[s]+'</option>';
+    }).join('');
+  }
+  $('sessf').addEventListener('change', function(e){ state.sess = e.target.value; renderList(); });
   $('chips').addEventListener('click', function(e){
     var b = e.target.closest('.chip'); if(!b) return;
     state.filter = b.dataset.s; renderChips(); renderList();
@@ -209,29 +274,44 @@ textarea:focus,select.status:focus{border-color:var(--accent);outline:none}
 
   function renderList(){
     var q = state.q;
-    var items = state.leads.filter(function(l){
+    var L = ofView(), boot = isBoot(), t = todayMT();
+    var items = L.filter(function(l){
       if(state.filter !== 'All' && l.status !== state.filter) return false;
+      if(boot && state.sess !== 'All' && (l.sessions||[]).indexOf(state.sess) < 0) return false;
       if(!q) return true;
-      return [l.name, l.phone, l.email, l.goal, l.aim, (l.notes||[]).map(function(n){ return n.text; }).join(' ')].join(' ').toLowerCase().indexOf(q) > -1 || String(l.phone).replace(/\D/g,'').indexOf(q.replace(/\D/g,'') || '~') > -1;
+      return [l.name, l.phone, l.email, l.goal, l.aim, l.level, (l.notes||[]).map(function(n){ return n.text; }).join(' ')].join(' ').toLowerCase().indexOf(q) > -1 || String(l.phone).replace(/\D/g,'').indexOf(q.replace(/\D/g,'') || '~') > -1;
     });
-    if(!items.length){ $('list').innerHTML = '<div class="empty">'+(state.leads.length ? 'No leads match.' : 'No leads yet. New ones from the website show up here automatically.')+'</div>'; return; }
+    if(!items.length){
+      $('list').innerHTML = '<div class="empty">' + (L.length ? 'Nobody matches.' : boot
+        ? 'No boot camp sign-ups yet. They show up here automatically from kenan360.net/bootcamp.'
+        : 'No leads yet. New ones from the website show up here automatically.') + '</div>';
+      return;
+    }
     $('list').innerHTML = items.map(function(l){
       var first = (l.name || 'there').split(' ')[0];
-      var sms = 'sms:' + telHref(l.phone) + '?&body=' + encodeURIComponent('Hey ' + first + ', this is Kenan from Kenan 360! Thanks for reaching out about your goals. When works for a quick free consultation?');
+      var up = (l.sessions||[]).filter(function(s){ return s >= t; });
+      var msg = boot
+        ? 'Hey ' + first + ', this is Kenan from Kenan 360! You’re signed up for Saturday Boot Camp' + (up[0] ? ' on ' + satLabel(up[0], true) : '') + ' at 10:30 AM. See you there!'
+        : 'Hey ' + first + ', this is Kenan from Kenan 360! Thanks for reaching out about your goals. When works for a quick free consultation?';
+      var sms = 'sms:' + telHref(l.phone) + '?&body=' + encodeURIComponent(msg);
+      var tags = boot
+        ? (l.sessions||[]).map(function(s){ return '<span class="tag sess'+(s < t ? ' past' : '')+'">'+esc(satLabel(s))+' · 10:30 AM</span>'; }).join('') +
+          [l.level, '$25 drop-in'].filter(Boolean).map(function(x){ return '<span class="tag">'+esc(x)+'</span>'; }).join('')
+        : [l.goal, l.aim, l.source].filter(Boolean).map(function(x){ return '<span class="tag">'+esc(x)+'</span>'; }).join('');
       return '<article class="lead" data-id="'+esc(l.id)+'">' +
-        '<div class="top"><div class="who"><h2>'+esc(l.name || 'No name')+'</h2><div class="when">'+esc(ago(l.created_at))+'</div></div>' +
+        '<div class="top"><div class="who"><h2>'+esc(l.name || 'No name')+'</h2><div class="when">'+(boot ? 'Signed up ' : '')+esc(ago(l.last_signup || l.created_at))+'</div></div>' +
         '<span class="badge '+cls(l.status)+'">'+esc(l.status)+'</span></div>' +
-        '<div class="tags">' + [l.goal, l.aim, l.source].filter(Boolean).map(function(t){ return '<span class="tag">'+esc(t)+'</span>'; }).join('') + '</div>' +
+        '<div class="tags">' + tags + '</div>' +
         '<div class="contact">' +
           (l.phone ? '<a class="act primary" href="'+esc(sms)+'"><svg><use href="#i-text"/></svg>Text</a>' +
                      '<a class="act" href="tel:'+esc(telHref(l.phone))+'"><svg><use href="#i-call"/></svg>'+esc(fmtPhone(l.phone))+'</a>' : '') +
           (l.email ? '<a class="act" href="mailto:'+esc(l.email)+'"><svg><use href="#i-mail"/></svg>'+esc(l.email)+'</a>' : '') +
         '</div>' +
-        '<div class="row"><select class="status" aria-label="Status">' + state.statuses.map(function(s){ return '<option'+(s===l.status?' selected':'')+'>'+esc(s)+'</option>'; }).join('') + '</select>' +
+        '<div class="row"><select class="status" aria-label="Status">' + statuses().map(function(s){ return '<option'+(s===l.status?' selected':'')+'>'+esc(s)+'</option>'; }).join('') + '</select>' +
         '<div><div class="addnote"><textarea class="newnote" rows="1" placeholder="Add a note…"></textarea>' +
         '<button class="addbtn" type="button" disabled>Add note</button></div>' +
         '<ul class="nlist">' + notesHTML(l.notes) + '</ul></div></div>' +
-        '<div class="foot"><span class="saved"></span><button class="del" type="button">Delete lead</button></div>' +
+        '<div class="foot"><span class="saved"></span><button class="del" type="button">'+(boot ? 'Delete sign-up' : 'Delete lead')+'</button></div>' +
       '</article>';
     }).join('');
   }

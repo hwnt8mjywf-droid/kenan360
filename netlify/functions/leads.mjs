@@ -1,18 +1,20 @@
-// Lead CRM API used by /crm and by the website's lead form.
-// POST   /api/leads        -> new lead from the website form (public)
-// GET    /api/leads        -> all leads, newest first
+// Lead CRM API used by /crm, the website's lead form and the boot camp page.
+// POST   /api/leads        -> new lead, or { kind: "bootcamp", session } for a boot camp sign-up (public)
+// GET    /api/leads        -> all leads and boot camp sign-ups, newest first
 // PATCH  /api/leads        -> { id, status? } | { id, addNote } | { id, deleteNote }
 // DELETE /api/leads?id=... -> remove one lead
 // If the CRM_PASSWORD environment variable is set in Netlify, everything except
 // POST needs it in the x-crm-key header; if it isn't set, the CRM is open.
 import { getStore } from "@netlify/blobs";
 import { timingSafeEqual, createHash, randomUUID } from "node:crypto";
-import { saveLead } from "../lib/save-lead.mjs";
+import { saveLead, saveBootcamp } from "../lib/save-lead.mjs";
 
 const json = (obj, status = 200) =>
   new Response(JSON.stringify(obj), { status, headers: { "content-type": "application/json", "cache-control": "no-store" } });
 
 const STATUSES = ["New", "Contacted", "Consult booked", "Client", "Not interested"];
+const BOOTCAMP_STATUSES = ["Signed up", "Confirmed", "Paid", "Attended", "No-show", "Cancelled"];
+const kindOf = (l) => (l.kind === "bootcamp" ? "bootcamp" : "lead");
 
 // Leads from before the CRM existed live in the LEAD_SEED environment variable
 // (kept out of this public repo). Each one is added once.
@@ -52,10 +54,15 @@ export default async (req) => {
     let d;
     try { d = await req.json(); } catch { return json({ error: "bad request" }, 400); }
     if (d["bot-field"]) return json({ ok: true });
-    const result = await saveLead(store, {
-      name: d.first_name, phone: d.phone, email: d.email, goal: d.goal, aim: d.aim, referrer: d.referrer,
-    });
-    console.log("crm: website lead", result);
+    const result = d.kind === "bootcamp"
+      ? await saveBootcamp(store, {
+          name: [d.first_name, d.last_name].filter(Boolean).join(" "), phone: d.phone, email: d.email,
+          session: d.session, level: d.level, referrer: d.referrer,
+        })
+      : await saveLead(store, {
+          name: d.first_name, phone: d.phone, email: d.email, goal: d.goal, aim: d.aim, referrer: d.referrer,
+        });
+    console.log("crm: website", d.kind === "bootcamp" ? "bootcamp" : "lead", result);
     return json({ ok: result !== "invalid" }, result === "invalid" ? 400 : 201);
   }
 
@@ -65,8 +72,10 @@ export default async (req) => {
     await ensureSeed(store);
     const { blobs } = await store.list();
     const items = await Promise.all(blobs.filter((b) => !b.key.startsWith("_")).map((b) => store.get(b.key, { type: "json" })));
-    const leads = items.filter(Boolean).map(normalize).sort((a, b) => (a.created_at < b.created_at ? 1 : -1));
-    return json({ leads, statuses: STATUSES });
+    const leads = items.filter(Boolean).map(normalize)
+      .map((l) => ({ ...l, kind: kindOf(l) }))
+      .sort((a, b) => ((a.last_signup || a.created_at) < (b.last_signup || b.created_at) ? 1 : -1));
+    return json({ leads, statuses: STATUSES, bootcampStatuses: BOOTCAMP_STATUSES });
   }
 
   if (req.method === "PATCH") {
@@ -77,7 +86,8 @@ export default async (req) => {
     if (!raw) return json({ error: "not found" }, 404);
     const lead = normalize(raw);
     if (d.status !== undefined) {
-      if (!STATUSES.includes(d.status)) return json({ error: "bad status" }, 400);
+      const allowed = kindOf(lead) === "bootcamp" ? BOOTCAMP_STATUSES : STATUSES;
+      if (!allowed.includes(d.status)) return json({ error: "bad status" }, 400);
       lead.status = d.status;
     }
     if (d.addNote !== undefined) {
