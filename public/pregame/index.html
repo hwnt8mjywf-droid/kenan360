@@ -73,6 +73,7 @@ header.nav.scrolled{border-color:var(--line);box-shadow:0 6px 24px -14px rgba(60
 .fact.free b{color:var(--or)}
 .pills{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 26px}
 .pills span{background:#fff;border:1px solid var(--line2);border-radius:999px;padding:8px 14px;font:700 13px 'Montserrat',sans-serif;color:var(--ink);letter-spacing:.03em}
+.pills .hot{background:var(--ink);color:#fff;border:1px solid var(--ink);border-radius:999px;padding:8px 14px;font:700 13px 'Montserrat',sans-serif;letter-spacing:.03em}
 .pills span.hot{background:var(--ink);color:#fff;border-color:var(--ink)}
 
 /* countdown */
@@ -125,6 +126,20 @@ header.nav.scrolled{border-color:var(--line);box-shadow:0 6px 24px -14px rgba(60
 .sec-head .eyebrow{justify-content:center}
 .sec-head h2{font-size:clamp(34px,5vw,56px)}
 .sec-head p{font-size:17px;margin:14px 0 0}
+
+/* lineup */
+.djs{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.dj{position:relative;border-radius:20px;overflow:hidden;background:#16110E;aspect-ratio:4/5;box-shadow:0 26px 50px -30px rgba(40,15,5,.55);transition:transform .35s,box-shadow .35s}
+.dj:hover{transform:translateY(-6px);box-shadow:0 34px 60px -30px rgba(255,95,15,.6)}
+.dj img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.dj:hover img{transform:scale(1.05)}
+.dj:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 52%,rgba(16,10,6,.88) 100%)}
+.dj .lbl{position:absolute;left:18px;right:18px;bottom:16px;z-index:1;color:#fff}
+.dj .lbl small{display:block;font:800 11px 'Montserrat',sans-serif;letter-spacing:.24em;color:#FFB27A;margin-bottom:2px}
+.dj .lbl b{display:block;font:900 italic 26px/1.05 'Montserrat',sans-serif;text-transform:uppercase}
+.dj .num{position:absolute;top:14px;left:14px;z-index:1;background:var(--or);color:#fff;font:900 italic 13px 'Montserrat',sans-serif;padding:5px 9px;border-radius:8px}
+@media(max-width:1000px){.djs{grid-template-columns:1fr 1fr}}
+@media(max-width:420px){.djs{gap:12px}.dj .lbl b{font-size:21px}.dj .lbl{left:12px;bottom:12px}}
 
 /* guest list */
 .glist{background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
@@ -275,7 +290,7 @@ footer a{color:var(--body);text-decoration:none;font-weight:700}
         <div class="fact free"><small>Entry</small><b>FREE</b><span>No cover all night</span></div>
       </div>
       <div class="pills">
-        <span class="hot">Live DJs all night</span><span>VIP tables</span><span>Food on deck</span><span>21+</span>
+        <a class="hot" href="#lineup" style="text-decoration:none">Live DJs all night</a><span>VIP tables</span><span>Food on deck</span><span>21+</span>
       </div>
       <div class="cd" id="cd" aria-live="polite"></div>
     </div>
@@ -329,6 +344,22 @@ footer a{color:var(--body);text-decoration:none;font-weight:700}
   </div>
 </section>
 
+<section class="sec" id="lineup">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">The Lineup</div>
+      <h2 class="it">Live <span class="or">DJs</span> all night</h2>
+      <p>Four DJs on the decks from 9 PM until close.</p>
+    </div>
+    <div class="djs">
+      <div class="dj reveal"><span class="num">01</span><img src="/pregame/djs/chris-light.webp" alt="DJ Chris Light" width="800" height="1000" loading="lazy"><div class="lbl"><small>DJ</small><b>Chris Light</b></div></div>
+      <div class="dj reveal d1"><span class="num">02</span><img src="/pregame/djs/cash-rose.webp" alt="DJ Cash Rose" width="800" height="1000" loading="lazy"><div class="lbl"><small>DJ</small><b>Cash Rose</b></div></div>
+      <div class="dj reveal d2"><span class="num">03</span><img src="/pregame/djs/scratch.webp" alt="DJ Scratch" width="800" height="1000" loading="lazy"><div class="lbl"><small>DJ</small><b>Scratch</b></div></div>
+      <div class="dj reveal d3"><span class="num">04</span><img src="/pregame/djs/zack.webp" alt="DJ Zack" width="800" height="1000" loading="lazy"><div class="lbl"><small>DJ</small><b>Zack</b></div></div>
+    </div>
+  </div>
+</section>
+
 <section class="sec glist" id="guests">
   <div class="wrap">
     <div class="sec-head reveal">
@@ -353,7 +384,7 @@ footer a{color:var(--body);text-decoration:none;font-weight:700}
       <h2 class="it">What's <span class="or">waiting</span></h2>
     </div>
     <div class="night">
-      <div class="nb reveal"><div class="ic"><svg><use href="#music"/></svg></div><h3>Live DJs</h3><p>DJs on the decks from 9 PM until close. All night, no breaks.</p></div>
+      <div class="nb reveal"><div class="ic"><svg><use href="#music"/></svg></div><h3>Live DJs</h3><p>Chris Light, Cash Rose, Scratch and Zack on the decks from 9 PM until close.</p></div>
       <div class="nb reveal d1"><div class="ic"><svg><use href="#star"/></svg></div><h3>VIP tables</h3><p>Rolling deep? Grab a table and celebrate in style with the crew.</p></div>
       <div class="nb reveal d2"><div class="ic"><svg><use href="#food"/></svg></div><h3>Food menu</h3><p>Grilled cheese bites, caviar, chicken tenders and more.</p></div>
       <div class="nb reveal d3"><div class="ic"><svg><use href="#ticket"/></svg></div><h3>No cover</h3><p>Free entry all night. Just RSVP and bring a valid 21+ ID.</p></div>
