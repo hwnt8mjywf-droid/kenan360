@@ -75,8 +75,6 @@ textarea:focus,select.status:focus{border-color:var(--accent);outline:none}
 .s-Confirmed{background:#E8F0FE;color:#1F55C0}
 .s-Paid{background:#E6F6EC;color:#1C7A43}
 .s-Attended{background:#E6F6EC;color:#1C7A43}
-.s-Going{background:#FFEBDD;color:#C2410C}
-.s-Checked{background:#E6F6EC;color:#1C7A43}
 .s-No-show{background:#FFF4DB;color:#9A6A00}
 .s-Cancelled{background:#F1EEEE;color:#7D6F71}
 .addnote{display:flex;gap:8px;align-items:flex-start}
@@ -137,7 +135,6 @@ textarea:focus,select.status:focus{border-color:var(--accent);outline:none}
     <nav class="views" id="views" role="tablist" aria-label="CRM sections">
       <button class="view" type="button" role="tab" data-v="lead" aria-selected="true">Coaching Leads<i id="cLead">0</i></button>
       <button class="view" type="button" role="tab" data-v="bootcamp" aria-selected="false">Boot Camp<i id="cBoot">0</i></button>
-      <button class="view" type="button" role="tab" data-v="rsvp" aria-selected="false">Birthday RSVPs<i id="cRsvp">0</i></button>
     </nav>
     <div class="stats" id="stats"></div>
     <div class="tools">
@@ -160,10 +157,9 @@ textarea:focus,select.status:focus{border-color:var(--accent);outline:none}
   var KEY = 'k360crm';
   var pw = '';
   try { pw = sessionStorage.getItem(KEY) || localStorage.getItem(KEY) || ''; } catch(e) {}
-  var state = { leads: [], statuses: [], bootStatuses: [], rsvpStatuses: [], view: 'lead', filter: 'All', sess: 'All', q: '' };
-  try { var sv = localStorage.getItem('k360view'); if(sv === 'bootcamp' || sv === 'rsvp') state.view = sv; } catch(e) {}
+  var state = { leads: [], statuses: [], bootStatuses: [], view: 'lead', filter: 'All', sess: 'All', q: '' };
+  try { if(localStorage.getItem('k360view') === 'bootcamp') state.view = 'bootcamp'; } catch(e) {}
   if(location.hash === '#bootcamp') state.view = 'bootcamp';
-  if(location.hash === '#rsvp') state.view = 'rsvp';
   var $ = function(id){ return document.getElementById(id); };
 
   function api(method, body, query){
@@ -178,7 +174,7 @@ textarea:focus,select.status:focus{border-color:var(--accent);outline:none}
 
   function load(){
     return api('GET').then(function(d){
-      state.leads = d.leads; state.statuses = d.statuses; state.bootStatuses = d.bootcampStatuses || []; state.rsvpStatuses = d.rsvpStatuses || [];
+      state.leads = d.leads; state.statuses = d.statuses; state.bootStatuses = d.bootcampStatuses || [];
       $('gate').hidden = true; $('app').hidden = false;
       render();
     });
@@ -213,16 +209,13 @@ textarea:focus,select.status:focus{border-color:var(--accent);outline:none}
 
   // Coaching leads and boot camp sign-ups live in separate tabs.
   var isBoot = function(){ return state.view === 'bootcamp'; };
-  var isRsvp = function(){ return state.view === 'rsvp'; };
-  var kindOf = function(l){ return l.kind === 'bootcamp' || l.kind === 'rsvp' ? l.kind : 'lead'; };
-  function ofView(){ return state.leads.filter(function(l){ return kindOf(l) === state.view; }); }
-  function statuses(){ return isBoot() ? state.bootStatuses : isRsvp() ? state.rsvpStatuses : state.statuses; }
+  function ofView(){ return state.leads.filter(function(l){ return (l.kind === 'bootcamp') === isBoot(); }); }
+  function statuses(){ return isBoot() ? state.bootStatuses : state.statuses; }
   function renderViews(){
     var nb = state.leads.filter(function(l){ return l.kind === 'bootcamp'; }).length;
-    var nr = state.leads.filter(function(l){ return l.kind === 'rsvp'; }).length;
-    $('cLead').textContent = state.leads.length - nb - nr; $('cBoot').textContent = nb; $('cRsvp').textContent = nr;
+    $('cLead').textContent = state.leads.length - nb; $('cBoot').textContent = nb;
     document.querySelectorAll('.view').forEach(function(b){ b.setAttribute('aria-selected', String(b.dataset.v === state.view)); });
-    $('q').placeholder = isBoot() ? 'Search boot camp sign-ups…' : isRsvp() ? 'Search birthday RSVPs…' : 'Search name, phone, email…';
+    $('q').placeholder = isBoot() ? 'Search boot camp sign-ups…' : 'Search name, phone, email…';
   }
   $('views').addEventListener('click', function(e){
     var b = e.target.closest('.view'); if(!b || b.dataset.v === state.view) return;
@@ -240,16 +233,6 @@ textarea:focus,select.status:focus{border-color:var(--accent);outline:none}
   function renderStats(){
     var L = ofView(), c = function(s){ return L.filter(function(l){ return l.status === s; }).length; };
     var week = L.filter(function(l){ return Date.now() - new Date(l.last_signup || l.created_at) < 7*864e5; }).length;
-    if(isRsvp()){
-      var going = L.filter(function(l){ return l.status !== 'Cancelled'; });
-      var heads = going.reduce(function(n, l){ return n + 1 + (l.guests || 0); }, 0);
-      $('stats').innerHTML =
-        '<div class="stat hot"><b>'+heads+'</b><small>People coming</small></div>' +
-        '<div class="stat"><b>'+going.length+'</b><small>RSVPs</small></div>' +
-        '<div class="stat"><b>'+c('Checked in')+'</b><small>Checked in</small></div>' +
-        '<div class="stat"><b>'+week+'</b><small>This week</small></div>';
-      return;
-    }
     if(isBoot()){
       var ns = nextSat(), nCount = ns ? L.filter(function(l){ return (l.sessions||[]).indexOf(ns) > -1 && l.status !== 'Cancelled'; }).length : 0;
       $('stats').innerHTML =
@@ -299,9 +282,7 @@ textarea:focus,select.status:focus{border-color:var(--accent);outline:none}
       return [l.name, l.phone, l.email, l.goal, l.aim, l.level, (l.notes||[]).map(function(n){ return n.text; }).join(' ')].join(' ').toLowerCase().indexOf(q) > -1 || String(l.phone).replace(/\D/g,'').indexOf(q.replace(/\D/g,'') || '~') > -1;
     });
     if(!items.length){
-      $('list').innerHTML = '<div class="empty">' + (L.length ? 'Nobody matches.' : isRsvp()
-        ? 'No RSVPs yet. They show up here automatically from kenan360.net/pregame.'
-        : boot
+      $('list').innerHTML = '<div class="empty">' + (L.length ? 'Nobody matches.' : boot
         ? 'No boot camp sign-ups yet. They show up here automatically from kenan360.net/bootcamp.'
         : 'No leads yet. New ones from the website show up here automatically.') + '</div>';
       return;
@@ -309,35 +290,28 @@ textarea:focus,select.status:focus{border-color:var(--accent);outline:none}
     $('list').innerHTML = items.map(function(l){
       var first = (l.name || 'there').split(' ')[0];
       var up = (l.sessions||[]).filter(function(s){ return s >= t; });
-      var rs = isRsvp();
-      var msg = rs
-        ? 'Hey ' + first + ', it’s Kenan! You’re on the list for my birthday pregame this Friday, Nov 6 at Sundays Best Rooftop (505 S Gale St, SLC), 9 PM. Free entry, bring your ID.' + (l.ticket ? ' Your ticket: ' + location.origin + '/pregame/ticket/?t=' + l.ticket : '') + ' See you there!'
-        : boot
+      var msg = boot
         ? 'Hey ' + first + ', this is Kenan from Kenan 360! You’re signed up for Saturday Boot Camp' + (up[0] ? ' on ' + satLabel(up[0], true) : '') + ' at 10:30 AM. See you there!'
         : 'Hey ' + first + ', this is Kenan from Kenan 360! Thanks for reaching out about your goals. When works for a quick free consultation?';
       var sms = 'sms:' + telHref(l.phone) + '?&body=' + encodeURIComponent(msg);
-      var tags = rs
-        ? ['<span class="tag sess">'+(l.guests ? 'Party of ' + (1 + l.guests) + ' (+' + l.guests + ')' : 'Just them')+'</span>'].concat(
-            [l.showName === false ? 'Name hidden on list' : '', l.source].filter(Boolean).map(function(x){ return '<span class="tag">'+esc(x)+'</span>'; })).join('')
-        : boot
+      var tags = boot
         ? (l.sessions||[]).map(function(s){ return '<span class="tag sess'+(s < t ? ' past' : '')+'">'+esc(satLabel(s))+' · 10:30 AM</span>'; }).join('') +
           [l.level, '$25 drop-in'].filter(Boolean).map(function(x){ return '<span class="tag">'+esc(x)+'</span>'; }).join('')
         : [l.goal, l.aim, l.source].filter(Boolean).map(function(x){ return '<span class="tag">'+esc(x)+'</span>'; }).join('');
       return '<article class="lead" data-id="'+esc(l.id)+'">' +
-        '<div class="top"><div class="who"><h2>'+esc(l.name || 'No name')+'</h2><div class="when">'+(rs ? 'RSVP’d ' : boot ? 'Signed up ' : '')+esc(ago(l.last_signup || l.created_at))+'</div></div>' +
+        '<div class="top"><div class="who"><h2>'+esc(l.name || 'No name')+'</h2><div class="when">'+(boot ? 'Signed up ' : '')+esc(ago(l.last_signup || l.created_at))+'</div></div>' +
         '<span class="badge '+cls(l.status)+'">'+esc(l.status)+'</span></div>' +
         '<div class="tags">' + tags + '</div>' +
         '<div class="contact">' +
           (l.phone ? '<a class="act primary" href="'+esc(sms)+'"><svg><use href="#i-text"/></svg>Text</a>' +
                      '<a class="act" href="tel:'+esc(telHref(l.phone))+'"><svg><use href="#i-call"/></svg>'+esc(fmtPhone(l.phone))+'</a>' : '') +
           (l.email ? '<a class="act" href="mailto:'+esc(l.email)+'"><svg><use href="#i-mail"/></svg>'+esc(l.email)+'</a>' : '') +
-          (rs && l.ticket ? '<a class="act" href="/pregame/ticket/?t='+encodeURIComponent(l.ticket)+'" target="_blank">🎟 Ticket / check in</a>' : '') +
         '</div>' +
         '<div class="row"><select class="status" aria-label="Status">' + statuses().map(function(s){ return '<option'+(s===l.status?' selected':'')+'>'+esc(s)+'</option>'; }).join('') + '</select>' +
         '<div><div class="addnote"><textarea class="newnote" rows="1" placeholder="Add a note…"></textarea>' +
         '<button class="addbtn" type="button" disabled>Add note</button></div>' +
         '<ul class="nlist">' + notesHTML(l.notes) + '</ul></div></div>' +
-        '<div class="foot"><span class="saved"></span><button class="del" type="button">'+(rs ? 'Delete RSVP' : boot ? 'Delete sign-up' : 'Delete lead')+'</button></div>' +
+        '<div class="foot"><span class="saved"></span><button class="del" type="button">'+(boot ? 'Delete sign-up' : 'Delete lead')+'</button></div>' +
       '</article>';
     }).join('');
   }

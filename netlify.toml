@@ -3,8 +3,3 @@
 
 [functions]
   node_bundler = "esbuild"
-
-[[redirects]]
-  from = "/rsvp"
-  to = "/pregame/"
-  status = 301
