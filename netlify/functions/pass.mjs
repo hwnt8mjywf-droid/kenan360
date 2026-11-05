@@ -41,7 +41,7 @@ export default async (req) => {
         { key: "venue", label: "VENUE", value: "Sundays Best Rooftop", textAlignment: "PKTextAlignmentRight" },
       ],
       backFields: [
-        { key: "where", label: "Where", value: "Sundays Best Rooftop, Downtown Salt Lake City" },
+        { key: "where", label: "Where", value: "Sundays Best Rooftop\n505 S Gale St, Salt Lake City, UT 84101" },
         { key: "when", label: "When", value: "Friday, November 6, 2026 · 9:00 PM – 1:00 AM" },
         { key: "rules", label: "Good to know", value: "21+ with valid ID. No cover all night. Live DJs, VIP tables." },
         { key: "code", label: "Ticket code", value: code },

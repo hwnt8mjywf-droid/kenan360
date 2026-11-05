@@ -311,7 +311,7 @@ textarea:focus,select.status:focus{border-color:var(--accent);outline:none}
       var up = (l.sessions||[]).filter(function(s){ return s >= t; });
       var rs = isRsvp();
       var msg = rs
-        ? 'Hey ' + first + ', it’s Kenan! You’re on the list for my birthday pregame this Friday, Nov 6 at Sundays Best Rooftop, 9 PM. Free entry, bring your ID.' + (l.ticket ? ' Your ticket: ' + location.origin + '/pregame/ticket/?t=' + l.ticket : '') + ' See you there!'
+        ? 'Hey ' + first + ', it’s Kenan! You’re on the list for my birthday pregame this Friday, Nov 6 at Sundays Best Rooftop (505 S Gale St, SLC), 9 PM. Free entry, bring your ID.' + (l.ticket ? ' Your ticket: ' + location.origin + '/pregame/ticket/?t=' + l.ticket : '') + ' See you there!'
         : boot
         ? 'Hey ' + first + ', this is Kenan from Kenan 360! You’re signed up for Saturday Boot Camp' + (up[0] ? ' on ' + satLabel(up[0], true) : '') + ' at 10:30 AM. See you there!'
         : 'Hey ' + first + ', this is Kenan from Kenan 360! Thanks for reaching out about your goals. When works for a quick free consultation?';

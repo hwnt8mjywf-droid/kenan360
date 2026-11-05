@@ -142,7 +142,7 @@ main{max-width:480px;margin:0 auto;padding:12px 20px 48px}
           '<div class="grid">'+
             '<div><small>Date</small><b>Fri, Nov 6</b><span>2026</span></div>'+
             '<div><small>Time</small><b>9 PM – 1 AM</b><span>Doors at 9</span></div>'+
-            '<div><small>Venue</small><b>Sundays Best</b><span>Rooftop · Downtown SLC</span></div>'+
+            '<div><small>Venue</small><b>Sundays Best</b><span>505 S Gale St · SLC</span></div>'+
             '<div><small>Entry</small><b>No cover</b><span>21+ · Bring ID</span></div>'+
           '</div>'+
         '</div>'+
@@ -156,7 +156,7 @@ main{max-width:480px;margin:0 auto;padding:12px 20px 48px}
         (k.wallet?'<a class="btn btn-wallet" href="/api/pass?t='+encodeURIComponent(t)+'"><svg><use href="#wallet"/></svg>Add to Apple Wallet</a>':'')+
         '<div class="two">'+
           '<a class="btn btn-line" id="cal" href="#" download="kenans-pregame.ics"><svg><use href="#cal"/></svg>Calendar</a>'+
-          '<a class="btn btn-line" href="https://www.google.com/maps/search/?api=1&query=Sundays+Best+Rooftop+Salt+Lake+City" target="_blank" rel="noopener"><svg><use href="#pin"/></svg>Directions</a>'+
+          '<a class="btn btn-line" href="https://www.google.com/maps/search/?api=1&query=Sundays+Best+505+S+Gale+St+Salt+Lake+City+UT+84101" target="_blank" rel="noopener"><svg><use href="#pin"/></svg>Directions</a>'+
         '</div>'+
         '<button class="btn btn-or" id="share" type="button"><svg><use href="#share"/></svg>Invite friends to RSVP</button>'+
       '</div>'+
@@ -174,7 +174,7 @@ main{max-width:480px;margin:0 auto;padding:12px 20px 48px}
     if(cal){
       var ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Kenan 360//Pregame//EN','BEGIN:VEVENT','UID:kenan-bday-2026@kenan360.net',
         'DTSTAMP:20261105T000000Z','DTSTART:20261107T040000Z','DTEND:20261107T080000Z',"SUMMARY:Kenan's Birthday Pregame",
-        'LOCATION:Sundays Best Rooftop\\, Downtown Salt Lake City','DESCRIPTION:Your ticket: '+location.href,'END:VEVENT','END:VCALENDAR'].join('\r\n');
+        'LOCATION:Sundays Best Rooftop\\, 505 S Gale St\\, Salt Lake City\\, UT 84101','DESCRIPTION:Your ticket: '+location.href,'END:VEVENT','END:VCALENDAR'].join('\r\n');
       cal.href='data:text/calendar;charset=utf-8,'+encodeURIComponent(ics);
     }
     var sh=$('share');

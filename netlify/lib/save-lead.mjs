@@ -84,7 +84,7 @@ export async function saveBootcamp(store, d) {
 export const RSVP_EVENT = {
   id: "bday-2026", label: "Kenan's Birthday Pregame · Fri, Nov 6 · 9 PM", closes: "2026-11-07T08:00:00Z",
   starts: "2026-11-06T21:00:00-07:00", ends: "2026-11-07T01:00:00-07:00",
-  venue: "Sundays Best Rooftop", area: "Downtown SLC", url: "https://kenan360.net/pregame",
+  venue: "Sundays Best Rooftop", area: "Downtown SLC", address: "505 S Gale St, Salt Lake City, UT 84101", url: "https://kenan360.net/pregame",
 };
 
 export const newTicketToken = () => randomBytes(12).toString("base64url");
