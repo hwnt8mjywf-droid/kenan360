@@ -1,0 +1,80 @@
+{
+ "artists/yeecii": {
+  "clips": [],
+  "createdAt": "2026-11-11T20:30:00Z",
+  "crop": {
+   "x": 0.62,
+   "y": 0.3,
+   "zoom": 1.25
+  },
+  "extraPhotos": [
+   "media/yeecii-1.jpg",
+   "media/yeecii-2.jpg"
+  ],
+  "logo": null,
+  "name": "¥EECII",
+  "notes": "Spelled ¥EECII on his own flyers and Instagram (@djyeecii). Brief said DEECII — confirm.",
+  "photo": "media/yeecii-3.jpg",
+  "tagline": "Straight from Miami",
+  "updatedAt": "2026-11-11T20:25:00Z"
+ },
+ "artists/zirage": {
+  "clips": [],
+  "createdAt": "2026-11-11T20:30:00Z",
+  "crop": {
+   "x": 0.5,
+   "y": 0.3,
+   "zoom": 1.15
+  },
+  "extraPhotos": [],
+  "logo": null,
+  "name": "ZIRAGÉ",
+  "notes": "Male DJ, curly hair, dark green suit.",
+  "photo": "media/zirage-1.jpg",
+  "tagline": "",
+  "updatedAt": "2026-11-11T20:25:00Z"
+ },
+ "artists/luthor": {
+  "clips": [],
+  "createdAt": "2026-11-11T20:30:00Z",
+  "crop": {
+   "x": 0.55,
+   "y": 0.22,
+   "zoom": 1.55
+  },
+  "extraPhotos": [],
+  "logo": null,
+  "name": "LUTHOR",
+  "notes": "Female DJ, white fluffy hat.",
+  "photo": "media/luthor-1.jpg",
+  "tagline": "",
+  "updatedAt": "2026-11-11T20:25:00Z"
+ },
+ "events/current": {
+  "event": {
+   "address": "505 S Gale St #200",
+   "age": "21+",
+   "brandA": "KENAN",
+   "brandB": "360",
+   "date": "Nov 13",
+   "dayOfWeek": "Friday",
+   "presenterLine": "Salt Lake City",
+   "time": "9 PM – 1 AM",
+   "title": "The Lineup",
+   "venue": "Sunday School • Salt Lake City"
+  },
+  "lineup": [
+   "yeecii",
+   "luthor",
+   "zirage"
+  ],
+  "masterVersion": 1,
+  "updatedAt": "2026-11-11T20:30:00Z"
+ },
+ "studio/media": {
+  "skyline": "https://dnznrvs05pmza.cloudfront.net/seedance_2_5/cgt-20261112043024-ytixs/Cinematic_night_drone_shot_gliding_over_a_luxury_rooftop_lounge_in_downtown_Salt_Lake_City__glowing_.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiNjBiYzQ1MmRkZjBmYjEzMSIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NDU0MTYxM30.4wA0EZIF0i2E0u8duNAwujymZqCeG_PmmyQBoVoPY14",
+  "lasers": "https://dnznrvs05pmza.cloudfront.net/seedance_2_5/cgt-20261112043025-km16i/Realistic_nightclub_footage_inside_a_big_packed_party__glamorous_girls_in_sparkly_gold__silver_and_b.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiODU3YjU1YTlmYjA1ZmViNiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NDU3ODk4NX0.LwzorR4xNGtyAgF31cgBFVlg5tFPEihtSvHXlG97Z1Q",
+  "bottles": "https://dnznrvs05pmza.cloudfront.net/seedance_2_5/cgt-20261112043026-2isdp/Bottle_service_parade_through_a_packed_nightclub_lit_with_deep_red_lighting_and_haze__champagne_bott.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiM2E5MzY0MDUyMTUyZjBmZiIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NDU1MjMyNX0.7l7cpSZyAhYaxoLzNrFvXha_iL532DvByHRXUFXj7Y8",
+  "toast": "https://dnznrvs05pmza.cloudfront.net/seedance_2_5/cgt-20261112043026-itfgw/Huge_packed_dance_floor_under_a_spinning_mirror_disco_ball__the_club_lit_in_deep_red_with_red_lasers.mp4?_jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXlIYXNoIjoiMmEzOTAwNGQzYjEyZDRmNCIsImJ1Y2tldCI6InJ1bndheS10YXNrLWFydGlmYWN0cyIsInN0YWdlIjoicHJvZCIsImV4cCI6MTc5NDU5OTUwMX0.D3zoH7YWkDbh13TLUIpzXQ5WdTqouiNAVhiGUYIYiCI"
+ }
+}

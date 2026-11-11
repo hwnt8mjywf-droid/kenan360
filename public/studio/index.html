@@ -1,0 +1,481 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><base href="/studio/"></head><body>
+<title>KENAN360 Lineup Studio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,800;1,900&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: orange command bar on top; editor column (event → lineup → library → footage) beside a sticky 9:16 preview monitor. */
+:root{
+  --bg:#FBF6F2; --surface:#FFFFFF; --ink:#1C120C; --muted:#7B6A5F; --line:#EBDFD6;
+  --orange:#FF6A13; --orange-ink:#B84506; --orange-soft:#FFE8DA; --ok:#1F8A4C; --warn:#B7791F; --bad:#C2341B;
+  --monitor:#0B0604;
+  --display:"Barlow Condensed","Arial Narrow",Impact,sans-serif; --body:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:12px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#130C08; --surface:#1D140F; --ink:#F6EEE8; --muted:#B39F92; --line:#33241B; --orange:#FF7A2B; --orange-ink:#FF9A5C; --orange-soft:#3A1E0E;
+  --ok:#4CC27F; --warn:#E3A84A; --bad:#FF6B4F; --monitor:#000; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#130C08; --surface:#1D140F; --ink:#F6EEE8; --muted:#B39F92; --line:#33241B; --orange:#FF7A2B; --orange-ink:#FF9A5C; --orange-soft:#3A1E0E;
+  --ok:#4CC27F; --warn:#E3A84A; --bad:#FF6B4F; --monitor:#000; color-scheme:dark}
+@font-face{font-family:K360Display;src:url(fonts/k360-display.otf);font-style:italic;font-weight:900}
+@font-face{font-family:K360Body;src:url(fonts/k360-body.otf);font-weight:700}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--orange)}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--orange);color:#fff;
+  padding-block:12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;justify-content:space-between}
+.brand{font-family:var(--display);font-style:italic;font-weight:900;font-size:30px;letter-spacing:.5px;line-height:1}
+.brand span{color:#1C120C}
+.badge{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;background:rgba(0,0,0,.18);padding:6px 10px;border-radius:999px}
+.status{font-size:12px;font-weight:600;color:#fff}
+.bar .status.ok,.bar .status.warn,.bar .status.bad{color:#fff}
+.wrap{padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:24px;max-width:1240px;margin:0 auto}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)}.monitor{position:static!important;order:-1}}
+.col{display:flex;flex-direction:column;gap:18px;min-width:0}
+section.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+h2{margin:0;font-family:var(--display);font-style:italic;font-weight:800;font-size:26px;letter-spacing:.3px;text-wrap:balance}
+.sub{margin:-8px 0 0;color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+label.f{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+input[type=text],select{font:500 14px var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 10px;min-width:0;width:100%}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--orange);outline-offset:2px}
+button{font:600 13px var(--body);border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 12px;cursor:pointer}
+button:hover{border-color:var(--orange)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.primary{background:var(--orange);border-color:var(--orange);color:#fff}
+.go{width:100%;padding:16px;font-family:var(--display);font-style:italic;font-weight:900;font-size:24px;letter-spacing:.6px;background:var(--orange);color:#fff;border:0}
+.go:hover{filter:brightness(1.05)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.dj{display:grid;grid-template-columns:28px 76px minmax(0,1fr) auto;gap:12px;align-items:start;border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--bg)}
+@media (max-width:520px){.dj{grid-template-columns:28px 64px minmax(0,1fr)}.dj .ord{grid-column:1/-1;flex-direction:row}}
+.num{font-family:var(--display);font-style:italic;font-weight:900;font-size:26px;color:var(--orange-ink);line-height:1}
+.thumb{width:76px;aspect-ratio:84/106;border-radius:8px;object-fit:cover;background:var(--orange-soft);border:1px solid var(--line);max-width:100%}
+.djbody{display:flex;flex-direction:column;gap:8px;min-width:0}
+.ord{display:flex;flex-direction:column;gap:6px}
+.ord button{padding:6px 9px}
+.sliders{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.sliders label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;flex-direction:column;gap:2px}
+input[type=range]{accent-color:var(--orange);width:100%}
+.lib{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.card{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg);display:flex;flex-direction:column}
+.card img,.card .ph{width:100%;aspect-ratio:84/106;object-fit:cover;background:var(--orange-soft);display:block}
+.card .ph{display:grid;place-items:center;color:var(--orange-ink);font-size:11px;font-weight:700;letter-spacing:.12em}
+.card .meta{padding:8px 10px;display:flex;flex-direction:column;gap:6px}
+.card b{font-family:var(--display);font-style:italic;font-weight:900;font-size:20px;line-height:1}
+.chip{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;border-radius:999px;background:var(--orange-soft);color:var(--orange-ink)}
+.slot{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.slot small{display:block;color:var(--muted)}
+.ok{color:var(--ok)} .warn{color:var(--warn)} .bad{color:var(--bad)}
+.monitor{position:sticky;top:calc(env(safe-area-inset-top,0px) + 78px);align-self:start;display:flex;flex-direction:column;gap:12px}
+.screen{background:var(--monitor);border-radius:16px;padding:10px;border:1px solid var(--line)}
+canvas#cv{display:block;width:100%;max-width:100%;aspect-ratio:9/16;border-radius:10px;background:#000}
+.tl{position:relative;height:30px;border-radius:6px;overflow:hidden;display:flex;background:var(--line);cursor:pointer}
+.tl div{flex:0 0 auto;border-right:2px solid var(--surface);font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--ink);display:flex;align-items:center;padding:0 6px;white-space:nowrap;overflow:hidden;text-transform:uppercase}
+.tl div:nth-child(odd){background:var(--orange-soft)}
+.tl .ph{position:absolute;top:0;bottom:0;width:2px;background:var(--orange);padding:0;border:0}
+.time{font-variant-numeric:tabular-nums;font-weight:600;color:var(--muted);font-size:12px}
+.note{font-size:12px;color:var(--muted)}
+.notice{border:1px solid var(--line);border-left:4px solid var(--orange);background:var(--surface);border-radius:8px;padding:10px 12px;font-size:13px}
+.progress{height:8px;border-radius:99px;background:var(--line);overflow:hidden}.progress i{display:block;height:100%;width:0;background:var(--orange)}
+dl.spec{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;margin:0;font-size:13px}
+dl.spec dt{color:var(--muted)} dl.spec dd{margin:0;font-weight:600}
+.confirm{display:flex;flex-direction:column;gap:8px;border:1px solid var(--orange);border-radius:10px;padding:12px;background:var(--orange-soft)}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+
+<header class="bar">
+  <div class="brand">KENAN<span>360</span> LINEUP STUDIO</div>
+  <div class="row"><span class="badge" id="masterBadge">Official Lineup Master · v1 · locked</span><span class="status" id="saveStatus">Loading…</span></div>
+</header>
+
+<main class="wrap">
+  <div class="col">
+    <section class="panel" aria-labelledby="h-ev">
+      <h2 id="h-ev">Event details</h2>
+      <p class="sub">These are text layers. Changing them never touches Runway.</p>
+      <div class="grid">
+        <label class="f">Day of week<input type="text" id="ev-dayOfWeek"></label>
+        <label class="f">Date<input type="text" id="ev-date" placeholder="Nov 13"></label>
+        <label class="f">Event title<input type="text" id="ev-title"></label>
+        <label class="f">Time<input type="text" id="ev-time"></label>
+        <label class="f">Venue line<input type="text" id="ev-venue"></label>
+        <label class="f">Address<input type="text" id="ev-address"></label>
+        <label class="f">Top line (intro)<input type="text" id="ev-presenterLine"></label>
+        <label class="f">Age<input type="text" id="ev-age"></label>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="h-lu">
+      <h2 id="h-lu">Lineup</h2>
+      <p class="sub">Order here is the order they appear. 1–6 DJs; reveal time is split evenly so the video stays 30 seconds.</p>
+      <div id="lineup" class="col" style="gap:10px"></div>
+      <div class="row">
+        <select id="addSel" aria-label="Add a DJ from the library"></select>
+        <button id="addBtn">Add to lineup</button>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="h-lib">
+      <h2 id="h-lib">Artist library</h2>
+      <p class="sub">Saved DJs with their approved photos and crop. Pick them again any week without re-uploading.</p>
+      <div class="row">
+        <input type="text" id="newName" placeholder="New DJ stage name" style="max-width:260px">
+        <button id="newBtn" class="primary">Save new artist</button>
+      </div>
+      <div id="lib" class="lib"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="h-ft">
+      <h2 id="h-ft">Master footage &amp; music</h2>
+      <p class="sub">Uploaded once, reused every week. Empty slots fall back to the built-in red-laser SLC rooftop backdrop, which costs nothing.</p>
+      <div id="slots" class="col" style="gap:8px"></div>
+      <p class="note">Clips: MP4 or WebM up to 6 MB (for bigger Runway clips, send Claude the link), no text or faces burned in. Music: M4A/MP4 audio. MP3 isn't accepted by the file store; ask Claude to convert it.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="h-ms">
+      <h2 id="h-ms">Master preset</h2>
+      <dl class="spec" id="spec"></dl>
+      <p class="note">The master is version-locked. Weekly edits change only the event and lineup; the master's look, timing and transitions stay fixed. Every saved lineup is kept by date as a backup.</p>
+      <div class="row"><select id="histSel" aria-label="Saved lineups"></select><button id="loadHist">Load saved lineup</button></div>
+    </section>
+  </div>
+
+  <aside class="monitor" aria-label="Preview">
+    <div class="screen"><canvas id="cv" width="1080" height="1920"></canvas></div>
+    <div class="tl" id="tl" title="Click to jump"></div>
+    <div class="row" style="justify-content:space-between">
+      <div class="row"><button id="playBtn" class="primary">Play preview</button><button id="stopBtn">Stop</button></div>
+      <span class="time" id="clock">0.0 / 30.0 s</span>
+    </div>
+    <button class="go" id="goBtn">GENERATE UPDATED VIDEO</button>
+    <div id="exportBox" hidden class="col" style="gap:8px">
+      <div class="progress"><i id="prog"></i></div>
+      <span class="note" id="exportNote"></span>
+    </div>
+    <p class="note">Renders here in your browser, in real time (about 30 s). Uses zero Runway credits. Keep this tab in front while it records.</p>
+  </aside>
+</main>
+
+<script src="studio-api.js"></script>
+<script src="engine.js"></script>
+<script>
+(() => {
+"use strict";
+const $ = (s) => document.querySelector(s);
+const P = K360.MASTER;
+const SLOT_KEYS = ["skyline", "lasers", "bottles", "toast"];
+let db = null, assets = null, downloads = null;
+let state = { event: defaultEvent(), lineup: [], artists: {}, media: {}, history: [] };
+const imgCache = {}, vidCache = {};
+let loaded = false, saveTimer = null, playing = null, previewT = 2.5;
+
+function defaultEvent() { return { brandA: "KENAN", brandB: "360", presenterLine: "", title: "The Lineup", dayOfWeek: "Friday", date: "", time: "", venue: "", address: "", age: "21+" }; }
+const srcOf = (ref) => !ref ? null : ref.startsWith("asset:") ? "/_blob/" + ref.slice(6) : ref;
+function setStatus(t, cls) { const s = $("#saveStatus"); s.textContent = t; s.className = "status " + (cls || ""); }
+
+// ---------- media loading ----------
+function img(ref) {
+  const src = srcOf(ref); if (!src) return null;
+  if (!imgCache[src]) { const i = new Image(); i.onload = () => drawStill(); i.src = src; imgCache[src] = i; }
+  const i = imgCache[src]; return i.complete && i.naturalWidth ? i : null;
+}
+function vid(key) {
+  const ref = state.media[key]; const src = srcOf(ref); if (!src) return null;
+  if (!vidCache[key] || vidCache[key].dataset.src !== src) {
+    const v = document.createElement("video"); v.muted = true; v.playsInline = true; v.preload = "auto"; v.dataset.src = src;
+    v.addEventListener("loadeddata", () => drawStill()); vidCache[key] = v;
+    // Stored clips load fully into memory so scrubbing and recording work on every phone.
+    if (src.startsWith("/_blob/")) fetch(src).then((r) => r.blob()).then((b) => { if (vidCache[key] === v) v.src = URL.createObjectURL(b); }).catch(() => { v.src = src; });
+    else v.src = src;
+  }
+  const v = vidCache[key]; return v.readyState >= 2 ? v : null;
+}
+function frameState() {
+  const artists = state.lineup.map((id) => { const a = state.artists[id] || {}; return { name: a.name || "TBA", tagline: a.tagline || "", crop: a.crop, img: img(a.photo) }; });
+  return { preset: P, event: state.event, artists, bg: {} };
+}
+
+// ---------- drawing ----------
+const cv = $("#cv"), ctx = cv.getContext("2d");
+function segs() { return K360.timeline(P, Math.max(1, state.lineup.length)); }
+function bgFor(seg, t, seekNow) {
+  const v = vid(seg.clip); if (!v) return null;
+  if (seekNow) { const ct = K360.clipTime(seg, t, v.duration); if (Math.abs(v.currentTime - ct) > 0.05) v.currentTime = ct; }
+  return v;
+}
+function drawAt(t, seekNow) {
+  const st = frameState(); const s = K360.segmentAt(segs(), t);
+  st.bg[s.slot] = bgFor(s, t, seekNow);
+  K360.drawFrame(ctx, t, st);
+}
+function drawStill() { if (!playing) { drawAt(previewT, true); paintTimeline(previewT); } }
+function paintTimeline(t) {
+  const tl = $("#tl"); const ss = segs();
+  if (tl.dataset.n !== String(ss.length) + state.lineup.join()) {
+    tl.dataset.n = String(ss.length) + state.lineup.join(); tl.innerHTML = "";
+    ss.forEach((s) => { const d = document.createElement("div"); d.style.width = ((s.t1 - s.t0) / P.duration * 100) + "%";
+      d.textContent = s.type === "intro" ? "Intro" : s.type === "finale" ? "Lineup" : ((state.artists[state.lineup[s.index]] || {}).name || "DJ " + (s.index + 1)); tl.appendChild(d); });
+    const ph = document.createElement("div"); ph.className = "ph"; tl.appendChild(ph);
+  }
+  tl.querySelector(".ph").style.left = (t / P.duration * 100) + "%";
+  $("#clock").textContent = t.toFixed(1) + " / " + P.duration.toFixed(1) + " s";
+}
+$("#tl").addEventListener("click", (e) => { if (playing) return; const r = e.currentTarget.getBoundingClientRect(); previewT = Math.min(29.9, Math.max(0, (e.clientX - r.left) / r.width * P.duration)); drawStill(); });
+
+// ---------- realtime playback (preview + export share this) ----------
+async function decodeMusic(ac) {
+  const src = srcOf(state.media.music) || "media/master-track.mp4";
+  try { const buf = await (await fetch(src)).arrayBuffer(); return await ac.decodeAudioData(buf); } catch (e) { return null; }
+}
+async function run({ record }) {
+  if (playing) return;
+  const ac = new (window.AudioContext || window.webkitAudioContext)();
+  const music = await decodeMusic(ac);
+  // make sure every image and clip is ready before the clock starts
+  frameState(); SLOT_KEYS.forEach(vid);
+  await Promise.all(Object.values(imgCache).map((i) => i.decode ? i.decode().catch(() => {}) : null));
+  await Promise.all(Object.values(vidCache).map((v) => v.readyState >= 2 ? null : new Promise((r) => { v.addEventListener("loadeddata", r, { once: true }); setTimeout(r, 6000); })));
+  const dest = ac.createMediaStreamDestination(); const gain = ac.createGain(); gain.connect(dest); if (!record) gain.connect(ac.destination);
+  let src = null;
+  if (music) { src = ac.createBufferSource(); src.buffer = music; src.connect(gain); }
+  let rec = null, chunks = [], mime = "";
+  if (record) {
+    const stream = cv.captureStream(P.fps); dest.stream.getAudioTracks().forEach((tr) => stream.addTrack(tr));
+    mime = ["video/mp4;codecs=avc1.640028,mp4a.40.2", "video/mp4;codecs=avc1,mp4a.40.2", "video/mp4", "video/webm;codecs=vp9,opus", "video/webm"].find((m) => window.MediaRecorder && MediaRecorder.isTypeSupported(m)) || "";
+    if (!mime) { ac.close(); throw new Error("This browser can't record video. Use Chrome, Edge or Safari, or ask Claude to render it."); }
+    rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: P.export.videoBitrate, audioBitsPerSecond: 192000 });
+    rec.ondataavailable = (e) => e.data.size && chunks.push(e.data);
+    rec.start(250);
+  }
+  const t0 = ac.currentTime + 0.15;
+  if (src) { gain.gain.setValueAtTime(1, t0 + P.duration - P.export.audioFadeOut); gain.gain.linearRampToValueAtTime(0, t0 + P.duration); src.start(t0); }
+  let lastSeg = null;
+  playing = { ac, src, rec };
+  $("#goBtn").disabled = true; $("#playBtn").disabled = true;
+  await new Promise((resolve) => {
+    const tick = () => {
+      if (!playing) return resolve();
+      const t = Math.max(0, ac.currentTime - t0);
+      if (t >= P.duration) return resolve();
+      const s = K360.segmentAt(segs(), t);
+      if (s !== lastSeg) { // start this scene's clip from its first frame at the master's rate
+        Object.values(vidCache).forEach((v) => v.pause());
+        const v = vid(s.clip); if (v) { v.playbackRate = K360.clipRate(s, v.duration); v.currentTime = 0; v.play().catch(() => {}); }
+        lastSeg = s;
+      }
+      drawAt(t, false); paintTimeline(t);
+      if (record) $("#prog").style.width = (t / P.duration * 100) + "%";
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+  Object.values(vidCache).forEach((v) => v.pause());
+  try { src && src.stop(); } catch (e) {}
+  let blob = null;
+  if (rec) { await new Promise((r) => { rec.onstop = r; rec.stop(); }); blob = new Blob(chunks, { type: mime.split(";")[0] }); }
+  ac.close(); playing = null;
+  $("#goBtn").disabled = false; $("#playBtn").disabled = false;
+  drawStill();
+  return { blob, ext: mime.startsWith("video/mp4") ? "mp4" : "webm" };
+}
+$("#playBtn").addEventListener("click", () => run({ record: false }));
+$("#stopBtn").addEventListener("click", () => { playing = null; });
+$("#goBtn").addEventListener("click", async () => {
+  $("#exportBox").hidden = false; $("#exportNote").textContent = "Recording the 30-second master with your lineup…";
+  try {
+    const { blob, ext } = await run({ record: true });
+    const name = "KENAN360-lineup-" + (state.event.date || "event").replace(/[^A-Za-z0-9]+/g, "-") + "." + ext;
+    $("#exportNote").textContent = "Done. Saving " + name + " (" + (blob.size / 1048576).toFixed(1) + " MB)…";
+    if (!downloads) { $("#exportNote").textContent = "Rendered, but this view can't save files. Open the page in claude.ai, or ask Claude to render it."; return; }
+    try { await downloads.save({ filename: name, data: blob }); $("#exportNote").textContent = "Saved " + name + "." + (ext === "webm" ? " This browser records WebM; Instagram accepts it, or ask Claude for an MP4." : " Ready for Instagram."); }
+    catch (e) { $("#exportNote").textContent = e && e.code === "declined" ? "Save cancelled. Press Generate again when ready." : "Couldn't save the file (" + (e && e.code || "error") + "). Ask Claude to render it instead."; }
+  } catch (e) { $("#exportNote").textContent = e.message || String(e); }
+});
+
+// ---------- editor UI ----------
+const EV_FIELDS = ["dayOfWeek", "date", "title", "time", "venue", "address", "presenterLine", "age"];
+function renderEvent() { EV_FIELDS.forEach((k) => { const el = $("#ev-" + k); if (document.activeElement !== el) el.value = state.event[k] || ""; }); }
+EV_FIELDS.forEach((k) => $("#ev-" + k).addEventListener("input", (e) => { state.event[k] = e.target.value; drawStill(); queueSave(); }));
+
+function artistList() { return Object.entries(state.artists).sort((a, b) => (a[1].name || "").localeCompare(b[1].name || "")); }
+function renderLineup() {
+  const box = $("#lineup"); box.innerHTML = "";
+  if (!state.lineup.length) { box.innerHTML = '<div class="notice">No DJs yet. Pick one from the library below and press <b>Add to lineup</b>.</div>'; }
+  state.lineup.forEach((id, i) => {
+    const a = state.artists[id] || { name: "Missing artist" }; const crop = a.crop || { x: .5, y: .3, zoom: 1 };
+    const el = document.createElement("div"); el.className = "dj";
+    el.innerHTML = '<div class="num">' + String(i + 1).padStart(2, "0") + '</div>' +
+      (srcOf(a.photo) ? '<img class="thumb" alt="">' : '<div class="thumb"></div>') +
+      '<div class="djbody"><div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">' +
+      '<label class="f">Stage name<input type="text" data-k="name" id="n-' + id + '"></label>' +
+      '<label class="f">Tagline<input type="text" data-k="tagline" id="t-' + id + '" placeholder="Optional"></label></div>' +
+      '<div class="sliders"><label>Left/right<input type="range" min="0" max="1" step="0.01" data-c="x" id="cx-' + id + '"></label>' +
+      '<label>Up/down<input type="range" min="0" max="1" step="0.01" data-c="y" id="cy-' + id + '"></label>' +
+      '<label>Zoom<input type="range" min="1" max="2.2" step="0.01" data-c="zoom" id="cz-' + id + '"></label></div>' +
+      '<div class="row"><label class="f" style="flex-direction:row;align-items:center;gap:8px"><span>Replace photo</span><input type="file" accept="image/png,image/jpeg,image/webp" id="ph-' + id + '"></label></div></div>' +
+      '<div class="ord"><button data-m="-1" aria-label="Move up">▲</button><button data-m="1" aria-label="Move down">▼</button><button data-r aria-label="Remove from lineup">✕</button></div>';
+    if (el.querySelector("img")) el.querySelector("img").src = srcOf(a.photo);
+    el.querySelector('[data-k="name"]').value = a.name || ""; el.querySelector('[data-k="tagline"]').value = a.tagline || "";
+    ["x", "y", "zoom"].forEach((c) => (el.querySelector('[data-c="' + c + '"]').value = crop[c] == null ? (c === "zoom" ? 1 : .5) : crop[c]));
+    el.querySelectorAll("input[type=text]").forEach((inp) => inp.addEventListener("input", () => { a[inp.dataset.k] = inp.dataset.k === "name" ? inp.value.toUpperCase() : inp.value; previewT = revealMid(i); drawStill(); queueArtist(id); }));
+    el.querySelectorAll("input[type=range]").forEach((inp) => inp.addEventListener("input", () => { a.crop = Object.assign({ x: .5, y: .3, zoom: 1 }, a.crop, { [inp.dataset.c]: +inp.value }); previewT = revealMid(i); drawStill(); queueArtist(id); }));
+    el.querySelector("input[type=file]").addEventListener("change", (e) => uploadPhoto(id, e.target.files[0]));
+    el.querySelectorAll("[data-m]").forEach((b) => b.addEventListener("click", () => { const j = i + +b.dataset.m; if (j < 0 || j >= state.lineup.length) return; const L = state.lineup; [L[i], L[j]] = [L[j], L[i]]; afterLineup(); }));
+    el.querySelector("[data-r]").addEventListener("click", () => { state.lineup.splice(i, 1); afterLineup(); });
+    box.appendChild(el);
+  });
+  const sel = $("#addSel"); sel.innerHTML = "";
+  const opts = artistList().filter(([id]) => !state.lineup.includes(id));
+  if (!opts.length) sel.innerHTML = "<option value=''>Everyone in the library is already in the lineup</option>";
+  opts.forEach(([id, a]) => { const o = document.createElement("option"); o.value = id; o.textContent = a.name; sel.appendChild(o); });
+  $("#addBtn").disabled = !opts.length || state.lineup.length >= 6;
+}
+function revealMid(i) { const s = segs()[i + 1]; return s ? (s.t0 + s.t1) / 2 : 2.5; }
+function afterLineup() { renderLineup(); renderLib(); previewT = 26.5; drawStill(); queueSave(); }
+$("#addBtn").addEventListener("click", () => { const id = $("#addSel").value; if (id && !state.lineup.includes(id)) { state.lineup.push(id); afterLineup(); } });
+
+function renderLib() {
+  const box = $("#lib"); box.innerHTML = "";
+  const list = artistList();
+  if (!list.length) box.innerHTML = '<div class="notice" style="grid-column:1/-1">The library is empty. Add a DJ by name above, then upload their photo.</div>';
+  list.forEach(([id, a]) => {
+    const c = document.createElement("div"); c.className = "card";
+    c.innerHTML = (srcOf(a.photo) ? '<img alt="">' : '<div class="ph">NO PHOTO</div>') +
+      '<div class="meta"><b></b><span class="chip"></span><label class="note">Photo <input type="file" accept="image/png,image/jpeg,image/webp" id="lp-' + id + '"></label></div>';
+    if (c.querySelector("img")) c.querySelector("img").src = srcOf(a.photo);
+    c.querySelector("b").textContent = a.name;
+    c.querySelector(".chip").textContent = state.lineup.includes(id) ? "In this lineup" : ((a.extraPhotos || []).length + 1) + " photo" + ((a.extraPhotos || []).length ? "s" : "");
+    c.querySelector("input").addEventListener("change", (e) => uploadPhoto(id, e.target.files[0]));
+    box.appendChild(c);
+  });
+}
+$("#newBtn").addEventListener("click", async () => {
+  const name = $("#newName").value.trim().toUpperCase(); if (!name) return;
+  const id = name.normalize("NFKD").replace(/[^\w]+/g, "-").replace(/^-|-$/g, "").toLowerCase() + "-" + Date.now().toString(36).slice(-4);
+  state.artists[id] = { name, tagline: "", photo: null, extraPhotos: [], crop: { x: .5, y: .3, zoom: 1 }, createdAt: new Date().toISOString() };
+  $("#newName").value = ""; renderLib(); renderLineup(); await writeArtist(id);
+});
+async function uploadPhoto(id, file) {
+  if (!file) return;
+  if (!assets) { setStatus("Only editors can upload photos here", "warn"); return; }
+  setStatus("Uploading photo…");
+  try {
+    const r = await assets.upload(file, { type: file.type || "image/jpeg" });
+    const a = state.artists[id]; if (a.photo) a.extraPhotos = [a.photo].concat(a.extraPhotos || []).slice(0, 12);
+    a.photo = "asset:" + r.id; await writeArtist(id); renderLineup(); renderLib(); previewT = revealMid(Math.max(0, state.lineup.indexOf(id))); drawStill();
+  } catch (e) { setStatus(e.code === "too_large" ? "That photo is over 20 MB" : "Upload failed (" + (e.code || "error") + ")", "bad"); }
+}
+
+function renderSlots() {
+  const box = $("#slots"); box.innerHTML = "";
+  SLOT_KEYS.concat(["music"]).forEach((k) => {
+    const has = !!state.media[k]; const used = k === "music" ? "Soundtrack for all 30 s" :
+      "Used for: " + [P.backgrounds.intro === k ? "intro" : "", P.backgrounds.reveal.includes(k) ? "DJ reveals" : "", P.backgrounds.finale === k ? "final lineup" : ""].filter(Boolean).join(", ");
+    const el = document.createElement("div"); el.className = "slot";
+    el.innerHTML = '<div><b></b><small></small><small class="' + (has ? "ok" : "warn") + '">' + (has ? (/^https?:/.test(state.media[k]) ? "Runway link (saving a copy…)" : "Saved") : k === "music" ? "Using the built-in KENAN360 house track" : "Empty: using the built-in backdrop") + '</small></div>' +
+      '<label class="f" style="text-transform:none;letter-spacing:0"><span class="note">' + (has ? "Replace" : "Upload") + '</span><input type="file" id="sl-' + k + '" accept="' + (k === "music" ? "audio/mp4,audio/x-m4a,video/mp4,.m4a" : "video/mp4,video/webm") + '"></label>';
+    el.querySelector("b").textContent = k === "music" ? "Music" : P.clipLabels[k];
+    el.querySelector("small").textContent = used;
+    el.querySelector("input").addEventListener("change", (e) => uploadMedia(k, e.target.files[0]));
+    box.appendChild(el);
+  });
+}
+async function uploadMedia(k, file) {
+  if (!file) return;
+  if (!assets) { setStatus("Only editors can upload footage here", "warn"); return; }
+  setStatus("Uploading " + (k === "music" ? "music" : "clip") + "…");
+  try {
+    const type = k === "music" ? "video/mp4" : (file.type === "video/webm" ? "video/webm" : "video/mp4");
+    const r = await assets.upload(file, { type });
+    state.media[k] = "asset:" + r.id; renderSlots(); drawStill();
+    if (db) { await db.doc("studio/media").set(state.media); setStatus("Saved", "ok"); }
+  } catch (e) { setStatus(e.code === "too_large" ? "Over the 20 MB limit: trim or compress it" : e.code === "unsupported_type" ? "That file type isn't accepted" : "Upload failed (" + (e.code || "error") + ")", "bad"); }
+}
+
+function renderSpec() {
+  const rows = [["Preset", P.name], ["Format", P.width + " × " + P.height + " · " + P.fps + " fps · " + P.duration + " s"],
+    ["Timeline", "Intro 0–" + P.introEnd + " s · DJ reveals " + P.introEnd + "–" + P.finaleStart + " s · Final lineup " + P.finaleStart + "–" + P.duration + " s"],
+    ["Music", P.bpm + " BPM, hits on every scene change"], ["Look", "Red club lighting, orange KENAN360 type, SLC rooftop skyline"]];
+  $("#spec").innerHTML = ""; rows.forEach(([k, v]) => { const dt = document.createElement("dt"); dt.textContent = k; const dd = document.createElement("dd"); dd.textContent = v; $("#spec").append(dt, dd); });
+}
+function renderHistory() {
+  const sel = $("#histSel"); sel.innerHTML = "";
+  if (!state.history.length) sel.innerHTML = "<option value=''>No saved lineups yet</option>";
+  state.history.forEach((h) => { const o = document.createElement("option"); o.value = h.id; o.textContent = h.id + " · " + (h.lineupNames || []).join(", "); sel.appendChild(o); });
+}
+$("#loadHist").addEventListener("click", () => { const h = state.history.find((x) => x.id === $("#histSel").value); if (!h) return; state.event = Object.assign(defaultEvent(), h.event); state.lineup = h.lineup.filter((id) => state.artists[id]); renderAll(); queueSave(); });
+
+function renderAll() { renderEvent(); renderLineup(); renderLib(); renderSlots(); renderHistory(); drawStill(); }
+
+// ---------- persistence ----------
+function dateKey() { const d = (state.event.date || "undated").replace(/[^A-Za-z0-9]+/g, "-").toLowerCase(); return d || "undated"; }
+function queueSave() { if (!db || !loaded) return; setStatus("Unsaved changes"); clearTimeout(saveTimer); saveTimer = setTimeout(saveEvent, 900); }
+let saving = false, again = false;
+async function saveEvent() {
+  if (saving) { again = true; return; } saving = true;
+  try {
+    const body = { event: state.event, lineup: state.lineup, masterVersion: P.version, updatedAt: new Date().toISOString() };
+    await db.doc("events/current").set(body);
+    await db.doc("lineups/" + dateKey()).set(Object.assign({ lineupNames: state.lineup.map((id) => (state.artists[id] || {}).name) }, body));
+    setStatus("Saved", "ok");
+  } catch (e) { setStatus("Couldn't save (" + (e.code || "error") + ")", "bad"); }
+  saving = false; if (again) { again = false; saveEvent(); }
+}
+const artistTimers = {};
+function queueArtist(id) { if (!db) return; setStatus("Unsaved changes"); clearTimeout(artistTimers[id]); artistTimers[id] = setTimeout(() => writeArtist(id), 900); }
+async function writeArtist(id) {
+  if (!db) return;
+  try { const a = Object.assign({}, state.artists[id], { updatedAt: new Date().toISOString() }); await db.doc("artists/" + id).set(a); setStatus("Saved", "ok"); }
+  catch (e) { setStatus("Couldn't save artist (" + (e.code || "error") + ")", "bad"); }
+}
+
+// Clips dropped in by link (e.g. Runway, whose links expire) are copied into this studio's own storage the first time an editor opens it.
+let adopting = false, adoptTried = false;
+async function adoptRemote() {
+  if (adopting || adoptTried || !assets || !db) return;
+  const keys = Object.keys(state.media).filter((k) => /^https?:/.test(state.media[k] || ""));
+  if (!keys.length) return;
+  adopting = true; adoptTried = true;
+  let done = 0, failed = 0;
+  for (const k of keys) {
+    const url = state.media[k];
+    setStatus("Saving new footage " + (done + failed + 1) + " of " + keys.length + "…");
+    try {
+      const up = await assets.importUrl(url);
+      state.media[k] = "asset:" + up.id; done++;
+    } catch (e) { failed++; }
+  }
+  if (done) { try { await db.doc("studio/media").set(state.media); } catch (e) {} }
+  adopting = false; renderSlots(); drawStill();
+  setStatus(failed ? "Using " + failed + " clip(s) from the Runway link (saved copy failed)" : "New footage saved", failed ? "warn" : "ok");
+}
+
+async function boot() {
+  renderSpec(); renderAll();
+  [db, assets, downloads] = await Promise.all(["db", "assets", "downloads"].map((n) => (window.claude && window.claude.use ? window.claude.use(n) : Promise.resolve(null)).catch(() => null)));
+  if (!downloads) $("#goBtn").title = "Saving files needs claude.ai";
+  if (!db) { setStatus("Viewing only: open in claude.ai to save", "warn"); loaded = true; return; }
+  const timer = setTimeout(() => setStatus("Still connecting to saved data…", "warn"), 10000);
+  let got = 0; const ready = () => { if (++got === 4) { clearTimeout(timer); loaded = true; setStatus("Saved", "ok"); renderAll(); } };
+  db.collection("artists").onSnapshot((qs) => {
+    const fresh = {}; qs.docs.forEach((d) => (fresh[d.id] = JSON.parse(JSON.stringify(d.data()))));
+    Object.keys(fresh).forEach((id) => { if (!artistTimers[id] || !state.artists[id]) state.artists[id] = fresh[id]; });
+    Object.keys(state.artists).forEach((id) => { if (!fresh[id] && !(state.artists[id].createdAt && Date.now() - Date.parse(state.artists[id].createdAt) < 5000)) delete state.artists[id]; });
+    if (loaded) { renderLineup(); renderLib(); drawStill(); } if (!qs.metadata.fromCache) ready.a || (ready.a = 1, ready());
+  }, () => ready());
+  db.doc("events/current").onSnapshot((s) => {
+    if (s.exists && !saveTimer && !saving) { const d = s.data(); state.event = Object.assign(defaultEvent(), JSON.parse(JSON.stringify(d.event || {}))); state.lineup = (d.lineup || []).slice(); if (loaded) { renderEvent(); renderLineup(); drawStill(); } }
+    if (!s.metadata.fromCache) ready.b || (ready.b = 1, ready());
+  }, () => ready());
+  db.doc("studio/media").onSnapshot((s) => { state.media = s.exists ? Object.assign({}, s.data()) : {}; if (loaded) { renderSlots(); drawStill(); } if (!s.metadata.fromCache) { ready.c || (ready.c = 1, ready()); adoptRemote(); } }, () => ready());
+  db.collection("lineups").onSnapshot((qs) => { state.history = qs.docs.map((d) => Object.assign({ id: d.id }, d.data())).sort((a, b) => (b.updatedAt || "").localeCompare(a.updatedAt || "")); renderHistory(); if (!qs.metadata.fromCache) ready.d || (ready.d = 1, ready()); }, () => ready());
+}
+document.fonts.load("900 italic 100px K360Display").then(() => document.fonts.load("700 100px K360Body")).finally(() => drawStill());
+boot();
+})();
+</script>
+
+</body></html>

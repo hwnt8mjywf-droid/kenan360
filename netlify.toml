@@ -3,3 +3,9 @@
 
 [functions]
   node_bundler = "esbuild"
+
+# Lineup Studio stored files (photos, clips, music)
+[[redirects]]
+  from = "/_blob/*"
+  to = "/api/studio/file/:splat"
+  status = 200
