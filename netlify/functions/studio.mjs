@@ -67,6 +67,27 @@ export default async (req) => {
     const type = (req.headers.get("content-type") || "").split(";")[0];
     if (!FILE_TYPES.includes(type)) return json({ error: "unsupported_type" }, 415);
     const bytes = await req.arrayBuffer();
+    const up = url.searchParams.get("up");
+    if (up) {
+      // Chunked upload: parts 0..of-1 arrive in order; the last one assembles the file.
+      const part = +url.searchParams.get("part"), of = +url.searchParams.get("of");
+      if (!/^[a-f0-9]{32}$/.test(up) || !Number.isInteger(part) || !Number.isInteger(of) || of < 1 || of > 8 || part < 0 || part >= of)
+        return json({ error: "bad request" }, 400);
+      await files.set("_part-" + up + "-" + part, bytes);
+      if (part < of - 1) return json({ ok: true, part });
+      const parts = [];
+      for (let i = 0; i < of; i++) {
+        const b = await files.get("_part-" + up + "-" + i, { type: "arrayBuffer" });
+        if (!b) return json({ error: "missing part " + i }, 400);
+        parts.push(new Uint8Array(b));
+      }
+      const total = parts.reduce((t, p) => t + p.byteLength, 0);
+      await Promise.all(parts.map((_, i) => files.delete("_part-" + up + "-" + i)));
+      if (total > MAX_FILE) return json({ error: "too_large" }, 413);
+      const all = new Uint8Array(total); let off = 0;
+      for (const p of parts) { all.set(p, off); off += p.byteLength; }
+      return json({ id: await saveFile(files, all, type) });
+    }
     if (bytes.byteLength > MAX_FILE) return json({ error: "too_large" }, 413);
     return json({ id: await saveFile(files, bytes, type) });
   }

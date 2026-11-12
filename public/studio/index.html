@@ -315,7 +315,7 @@ function renderLineup() {
       '<div class="sliders"><label>Left/right<input type="range" min="0" max="1" step="0.01" data-c="x" id="cx-' + id + '"></label>' +
       '<label>Up/down<input type="range" min="0" max="1" step="0.01" data-c="y" id="cy-' + id + '"></label>' +
       '<label>Zoom<input type="range" min="1" max="2.2" step="0.01" data-c="zoom" id="cz-' + id + '"></label></div>' +
-      '<div class="row"><label class="f" style="flex-direction:row;align-items:center;gap:8px"><span>Replace photo</span><input type="file" accept="image/png,image/jpeg,image/webp" id="ph-' + id + '"></label></div></div>' +
+      '<div class="row"><label class="f" style="flex-direction:row;align-items:center;gap:8px"><span>Replace photo</span><input type="file" accept="image/*" id="ph-' + id + '"></label></div></div>' +
       '<div class="ord"><button data-m="-1" aria-label="Move up">▲</button><button data-m="1" aria-label="Move down">▼</button><button data-r aria-label="Remove from lineup">✕</button></div>';
     if (el.querySelector("img")) el.querySelector("img").src = srcOf(a.photo);
     el.querySelector('[data-k="name"]').value = a.name || ""; el.querySelector('[data-k="tagline"]').value = a.tagline || "";
@@ -344,7 +344,7 @@ function renderLib() {
   list.forEach(([id, a]) => {
     const c = document.createElement("div"); c.className = "card";
     c.innerHTML = (srcOf(a.photo) ? '<img alt="">' : '<div class="ph">NO PHOTO</div>') +
-      '<div class="meta"><b></b><span class="chip"></span><label class="note">Photo <input type="file" accept="image/png,image/jpeg,image/webp" id="lp-' + id + '"></label></div>';
+      '<div class="meta"><b></b><span class="chip"></span><label class="note">Photo <input type="file" accept="image/*" id="lp-' + id + '"></label></div>';
     if (c.querySelector("img")) c.querySelector("img").src = srcOf(a.photo);
     c.querySelector("b").textContent = a.name;
     c.querySelector(".chip").textContent = state.lineup.includes(id) ? "In this lineup" : ((a.extraPhotos || []).length + 1) + " photo" + ((a.extraPhotos || []).length ? "s" : "");
@@ -358,15 +358,30 @@ $("#newBtn").addEventListener("click", async () => {
   state.artists[id] = { name, tagline: "", photo: null, extraPhotos: [], crop: { x: .5, y: .3, zoom: 1 }, createdAt: new Date().toISOString() };
   $("#newName").value = ""; renderLib(); renderLineup(); await writeArtist(id);
 });
+// Phone photos are big (and often HEIC); resize to 1800 px JPEG so they upload fast and always fit.
+async function shrinkPhoto(file) {
+  try {
+    const url = URL.createObjectURL(file);
+    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+    const sc = Math.min(1, 1800 / Math.max(img.naturalWidth, img.naturalHeight));
+    const c = document.createElement("canvas"); c.width = Math.round(img.naturalWidth * sc); c.height = Math.round(img.naturalHeight * sc);
+    c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+    const b = await new Promise((res) => c.toBlob(res, "image/jpeg", 0.88));
+    if (b && b.size) return b;
+  } catch (e) {}
+  if (/^image\/(jpeg|png|webp)$/.test(file.type)) return file;
+  throw Object.assign(new Error("unsupported"), { code: "unsupported_type" });
+}
 async function uploadPhoto(id, file) {
   if (!file) return;
   if (!assets) { setStatus("Only editors can upload photos here", "warn"); return; }
   setStatus("Uploading photo…");
   try {
-    const r = await assets.upload(file, { type: file.type || "image/jpeg" });
+    const small = await shrinkPhoto(file);
+    const r = await assets.upload(small, { type: small.type || "image/jpeg" });
     const a = state.artists[id]; if (a.photo) a.extraPhotos = [a.photo].concat(a.extraPhotos || []).slice(0, 12);
     a.photo = "asset:" + r.id; await writeArtist(id); renderLineup(); renderLib(); previewT = revealMid(Math.max(0, state.lineup.indexOf(id))); drawStill();
-  } catch (e) { setStatus(e.code === "too_large" ? "That photo is over 20 MB" : "Upload failed (" + (e.code || "error") + ")", "bad"); }
+  } catch (e) { setStatus(e.code === "too_large" ? "That photo is over 20 MB" : e.code === "unsupported_type" ? "Couldn't read that photo: try a JPEG or PNG" : e.code === "unauthorized" ? "Password expired: reload and sign in again" : "Upload failed (" + (e.code || "error") + ")", "bad"); }
 }
 
 function renderSlots() {

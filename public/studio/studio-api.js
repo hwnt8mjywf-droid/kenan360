@@ -70,7 +70,20 @@
   };
 
   var assets = {
-    upload: function (file, o) { return api("/upload", { method: "POST", headers: { "content-type": (o && o.type) || file.type }, body: file }); },
+    // Netlify functions reject request bodies over ~6 MB, so big files go up in 4 MB parts.
+    upload: function (file, o) {
+      var type = (o && o.type) || file.type, CH = 4 * 1024 * 1024;
+      if (file.size <= CH) return api("/upload", { method: "POST", headers: { "content-type": type }, body: file });
+      var n = Math.ceil(file.size / CH), up = "";
+      for (var k = 0; k < 32; k++) up += "0123456789abcdef"[Math.floor(Math.random() * 16)];
+      var i = 0;
+      function next() {
+        var q = "?up=" + up + "&part=" + i + "&of=" + n;
+        return api("/upload" + q, { method: "POST", headers: { "content-type": type }, body: file.slice(i * CH, (i + 1) * CH) })
+          .then(function (j) { i++; return i < n ? next() : j; });
+      }
+      return next();
+    },
     importUrl: function (url) { return api("/import", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ url: url }) }); }
   };
 
