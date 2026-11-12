@@ -161,6 +161,7 @@ dl.spec dt{color:var(--muted)} dl.spec dd{margin:0;font-weight:600}
 
 <script src="studio-api.js"></script>
 <script src="engine.js"></script>
+<script src="mp4-muxer.js"></script>
 <script>
 (() => {
 "use strict";
@@ -293,14 +294,109 @@ async function run({ record }) {
 }
 $("#playBtn").addEventListener("click", () => run({ record: false }));
 $("#stopBtn").addEventListener("click", () => { playing = null; });
-$("#goBtn").addEventListener("click", async () => {
-  $("#exportBox").hidden = false; $("#exportNote").textContent = "Recording the 30-second master with your lineup…";
+// ---------- frame-by-frame export ----------
+// Phones can't draw 1080x1920 live fast enough to record it, so this builds the video
+// one frame at a time (WebCodecs) and writes a real 30 fps MP4, however slow the phone is.
+async function pickVideoConfig() {
+  if (!window.VideoEncoder || !window.VideoFrame || !window.Mp4Muxer) return null;
+  for (const codec of ["avc1.640028", "avc1.4d0028", "avc1.42003e", "avc1.42002a"]) {
+    const c = { codec, width: P.width, height: P.height, bitrate: P.export.videoBitrate, framerate: P.fps, avc: { format: "avc" } };
+    try { if ((await VideoEncoder.isConfigSupported(c)).supported) return c; } catch (e) {}
+  }
+  return null;
+}
+function waitSeek(v, time) {
+  return new Promise((res) => {
+    if (Math.abs(v.currentTime - time) < 0.001 && v.readyState >= 2) return res();
+    const done = () => { clearTimeout(to); v.removeEventListener("seeked", done); res(); };
+    const to = setTimeout(done, 1500);
+    v.addEventListener("seeked", done); v.currentTime = time;
+  });
+}
+async function renderOffline() {
+  const vcfg = await pickVideoConfig(); if (!vcfg) return null;
+  // music: decode, trim to 30 s, fade out the tail
+  const ac = new (window.AudioContext || window.webkitAudioContext)();
+  let music = await decodeMusic(ac); ac.close();
+  let acfg = null;
+  if (music && window.AudioEncoder && window.AudioData) {
+    const ch = Math.min(2, music.numberOfChannels);
+    for (const [codec, sr, mux] of [["mp4a.40.2", music.sampleRate, "aac"], ["opus", 48000, "opus"]]) {
+      const c = { codec, sampleRate: sr, numberOfChannels: ch, bitrate: 192000 };
+      try { if ((await AudioEncoder.isConfigSupported(c)).supported) { acfg = c; acfg.mux = mux; break; } } catch (e) {}
+    }
+    // Opus runs at 48 kHz; resample the track if it was decoded at another rate.
+    if (acfg && acfg.sampleRate !== music.sampleRate && window.OfflineAudioContext) {
+      const oc = new OfflineAudioContext(ch, Math.ceil(music.duration * acfg.sampleRate), acfg.sampleRate);
+      const bs = oc.createBufferSource(); bs.buffer = music; bs.connect(oc.destination); bs.start();
+      music = await oc.startRendering();
+    } else if (acfg && acfg.sampleRate !== music.sampleRate) acfg = null;
+  }
+  const muxer = new Mp4Muxer.Muxer({
+    target: new Mp4Muxer.ArrayBufferTarget(), fastStart: "in-memory", firstTimestampBehavior: "offset",
+    video: { codec: "avc", width: P.width, height: P.height, frameRate: P.fps },
+    audio: acfg ? { codec: acfg.mux, numberOfChannels: acfg.numberOfChannels, sampleRate: acfg.sampleRate } : undefined
+  });
+  let failed = null;
+  const ve = new VideoEncoder({ output: (ch, m) => muxer.addVideoChunk(ch, m), error: (e) => { failed = e; } });
+  ve.configure(vcfg);
+  frameState(); SLOT_KEYS.forEach(vid);
+  await Promise.all(Object.values(imgCache).map((i) => i.decode ? i.decode().catch(() => {}) : null));
+  await Promise.all(Object.values(vidCache).map((v) => v.readyState >= 2 ? null : new Promise((r) => { v.addEventListener("loadeddata", r, { once: true }); setTimeout(r, 6000); })));
+  Object.values(vidCache).forEach((v) => v.pause());
+  playing = { offline: true }; setScale(1);
+  $("#goBtn").disabled = true; $("#playBtn").disabled = true;
+  const N = Math.round(P.duration * P.fps), us = 1e6 / P.fps;
   try {
-    const { blob, ext } = await run({ record: true });
+    for (let i = 0; i < N; i++) {
+      if (!playing) throw new Error("Export stopped.");
+      if (failed) throw failed;
+      const t = i / P.fps, sg = K360.segmentAt(segs(), t), v = vid(sg.clip);
+      if (v && v.duration) await waitSeek(v, K360.clipTime(sg, t, v.duration));
+      drawAt(t, false);
+      const f = new VideoFrame(cv, { timestamp: Math.round(i * us), duration: Math.round(us) });
+      ve.encode(f, { keyFrame: i % (P.fps * 2) === 0 }); f.close();
+      while (ve.encodeQueueSize > 6) await new Promise((r) => setTimeout(r, 5));
+      if (i % 3 === 0) { $("#prog").style.width = (i / N * 100) + "%"; paintTimeline(t); $("#exportNote").textContent = "Building the video… " + Math.round(i / N * 100) + "%"; await new Promise((r) => setTimeout(r, 0)); }
+    }
+    await ve.flush(); ve.close();
+    if (acfg) {
+      const sr = music.sampleRate, ch = acfg.numberOfChannels, total = Math.min(music.length, Math.round(P.duration * sr));
+      const fade0 = Math.round((P.duration - P.export.audioFadeOut) * sr);
+      const ae = new AudioEncoder({ output: (c, m) => muxer.addAudioChunk(c, m), error: (e) => { failed = e; } });
+      ae.configure({ codec: acfg.codec, sampleRate: acfg.sampleRate, numberOfChannels: acfg.numberOfChannels, bitrate: acfg.bitrate });
+      const src = []; for (let c = 0; c < ch; c++) src.push(music.getChannelData(c));
+      for (let off = 0; off < total; off += 4096) {
+        const n = Math.min(4096, total - off), buf = new Float32Array(n * ch);
+        for (let c = 0; c < ch; c++) for (let k = 0; k < n; k++) {
+          const at = off + k, g = at < fade0 ? 1 : Math.max(0, 1 - (at - fade0) / (total - fade0 || 1));
+          buf[c * n + k] = src[c][at] * g;
+        }
+        const d = new AudioData({ format: "f32-planar", sampleRate: sr, numberOfFrames: n, numberOfChannels: ch, timestamp: Math.round(off / sr * 1e6), data: buf });
+        ae.encode(d); d.close();
+      }
+      await ae.flush(); ae.close();
+      if (failed) throw failed;
+    }
+    muxer.finalize();
+    $("#prog").style.width = "100%";
+    return { blob: new Blob([muxer.target.buffer], { type: "video/mp4" }), ext: "mp4", silent: !acfg && !!music };
+  } finally {
+    try { if (ve.state !== "closed") ve.close(); } catch (e) {}
+    playing = null; setScale(0.5);
+    $("#goBtn").disabled = false; $("#playBtn").disabled = false;
+    drawStill();
+  }
+}
+
+$("#goBtn").addEventListener("click", async () => {
+  $("#exportBox").hidden = false; $("#exportNote").textContent = "Building the 30-second video with your lineup…";
+  try {
+    const { blob, ext, silent } = (await renderOffline()) || (await run({ record: true }));
     const name = "KENAN360-lineup-" + (state.event.date || "event").replace(/[^A-Za-z0-9]+/g, "-") + "." + ext;
     $("#exportNote").textContent = "Done. Saving " + name + " (" + (blob.size / 1048576).toFixed(1) + " MB)…";
     if (!downloads) { $("#exportNote").textContent = "Rendered, but this view can't save files. Open the page in claude.ai, or ask Claude to render it."; return; }
-    try { await downloads.save({ filename: name, data: blob }); $("#exportNote").textContent = "Saved " + name + "." + (ext === "webm" ? " This browser records WebM; Instagram accepts it, or ask Claude for an MP4." : " Ready for Instagram."); }
+    try { await downloads.save({ filename: name, data: blob }); $("#exportNote").textContent = "Saved " + name + "." + (silent ? " This browser couldn't add the music, so the file is silent: export from a computer in Chrome, or ask Claude to render it." : "") + (ext === "webm" ? " This browser records WebM; Instagram accepts it, or ask Claude for an MP4." : " Ready for Instagram."); }
     catch (e) { $("#exportNote").textContent = e && e.code === "declined" ? "Save cancelled. Press Generate again when ready." : "Couldn't save the file (" + (e && e.code || "error") + "). Ask Claude to render it instead."; }
   } catch (e) { $("#exportNote").textContent = e.message || String(e); }
 });
