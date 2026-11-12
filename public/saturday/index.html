@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>$25 Saturday Boot Camp | Kenan 360</title>
+<meta name="description" content="Saturday Boot Camp with Kenan — 10:30 AM every Saturday. $25 drop-in, all levels. Book your spot in 30 seconds.">
+<meta property="og:title" content="$25 Saturday Boot Camp with Kenan">
+<meta property="og:description" content="10:30 AM every Saturday. All levels. Book in 30 seconds.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1A1112;--body:#5A4C4E;--mute:#7D6F71;--line:#EEE2E3;--line2:#DCC8CA;--red:#C8102E;--red2:#A00D24;--soft:#FBF3F3}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#fff;color:var(--body);font:500 16px/1.55 'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.page{max-width:480px;margin:0 auto;padding:22px 18px 40px}
+.brand{text-align:center;font:800 14px 'Plus Jakarta Sans',sans-serif;letter-spacing:.3em;color:var(--ink);margin-bottom:22px}
+.tag{display:inline-block;background:var(--red);color:#fff;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:6px 12px;border-radius:8px}
+h1{font:800 clamp(34px,10vw,46px)/1.05 'Plus Jakarta Sans',sans-serif;color:var(--ink);margin:14px 0 10px;letter-spacing:-.02em}
+h1 em{font-style:normal;color:var(--red)}
+.when{font-size:17px;font-weight:700;color:var(--ink);margin:0 0 14px}
+.list{list-style:none;padding:0;margin:0 0 22px;display:grid;gap:6px}
+.list li{display:flex;gap:10px;align-items:center;font-weight:600}
+.list li:before{content:"✓";color:var(--red);font-weight:800}
+.card{border:1px solid var(--line);border-radius:18px;padding:20px 18px;box-shadow:0 24px 50px -30px rgba(60,10,14,.35)}
+.lbl{display:block;font-size:13px;font-weight:800;color:var(--ink);margin:0 0 8px}
+.days{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.day{border:1.5px solid var(--line2);background:#fff;border-radius:12px;padding:10px 8px;text-align:center;cursor:pointer;font:inherit;color:var(--ink);transition:border-color .15s,background .15s}
+.day b{display:block;font-size:15px}
+.day small{font-size:12px;color:var(--mute);font-weight:700}
+.day.on{border-color:var(--red);background:var(--red);color:#fff}
+.day.on small{color:rgba(255,255,255,.9)}
+.day:disabled{opacity:.45;cursor:default}
+input{display:block;width:100%;height:52px;padding:0 14px;margin-bottom:10px;border:1px solid var(--line2);border-radius:12px;background:#FCF8F8;font:600 16px 'Manrope',sans-serif;color:var(--ink);-webkit-appearance:none}
+input:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(200,16,46,.15)}
+.btn{width:100%;min-height:58px;border:0;border-radius:14px;background:var(--red);color:#fff;font:800 18px 'Plus Jakarta Sans',sans-serif;cursor:pointer;margin-top:4px}
+.btn:hover{background:var(--red2)}
+.btn:disabled{opacity:.7}
+.err{color:var(--red);font-size:14px;font-weight:700;margin:2px 0 8px}
+.err:empty{display:none}
+.fine{text-align:center;font-size:13px;color:var(--mute);margin:12px 0 0}
+.done{text-align:center;padding:12px 0}
+.done .ok{width:60px;height:60px;border-radius:50%;background:#E6F6EC;color:#1C7A43;font-size:30px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.done h2{font:800 28px 'Plus Jakarta Sans',sans-serif;color:var(--ink);margin:0 0 6px}
+.done p{margin:0 0 6px}
+.done .d{display:inline-block;background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:10px 16px;font-weight:800;color:var(--ink);margin:8px 0 12px}
+.call{display:block;text-align:center;margin-top:18px;color:var(--red);font-weight:800;text-decoration:none}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="brand">KENAN 360</div>
+  <span class="tag">$25 Drop-In</span>
+  <h1>Saturday <em>Boot Camp</em></h1>
+  <p class="when">Every Saturday · 10:30 AM · Coached by Kenan</p>
+  <ul class="list">
+    <li>Full-body workout: strength, cardio, core</li>
+    <li>All levels welcome</li>
+    <li>No membership. Just $25</li>
+  </ul>
+
+  <div class="card">
+    <form id="f" novalidate>
+      <span class="lbl">Pick your Saturday</span>
+      <div class="days" id="days"></div>
+      <input name="first_name" placeholder="First name" autocomplete="given-name" required>
+      <input name="phone" type="tel" inputmode="tel" placeholder="Phone number" autocomplete="tel" required>
+      <input name="bot" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+      <p class="err" id="err" role="alert"></p>
+      <button class="btn" id="btn" type="submit">Book My Spot · $25</button>
+      <p class="fine">No payment now · Takes 30 seconds</p>
+    </form>
+    <div class="done" id="done" hidden>
+      <div class="ok">✓</div>
+      <h2>You're in!</h2>
+      <div class="d" id="doneWhen"></div>
+      <p>See you Saturday. Bring water and training shoes.</p>
+    </div>
+  </div>
+  <a class="call" href="tel:+18483504771">Questions? Call or text (848) 350-4771</a>
+</div>
+
+<script>
+(function(){
+  var START='2026-11-14',API='/api/bootcamp',NOTIFY='https://formsubmit.co/ajax/kenanmasic44@gmail.com',$=function(i){return document.getElementById(i);};
+  function mt(){var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Denver',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;});return {date:p.year+'-'+p.month+'-'+p.day,mins:+p.hour*60+ +p.minute};}
+  function iso(d){return d.toISOString().slice(0,10);}
+  function lbl(s,long){return new Date(s+'T12:00:00Z').toLocaleDateString('en-US',long?{weekday:'long',month:'long',day:'numeric',timeZone:'UTC'}:{month:'short',day:'numeric',timeZone:'UTC'});}
+  var n=mt(),d=new Date((n.date>START?n.date:START)+'T12:00:00Z'),sats=[];
+  while(d.getUTCDay()!==6)d.setUTCDate(d.getUTCDate()+1);
+  if(iso(d)===n.date&&n.mins>=630)d.setUTCDate(d.getUTCDate()+7);
+  for(var i=0;i<4;i++){sats.push(iso(d));d.setUTCDate(d.getUTCDate()+7);}
+  var sel=null,cap=30,booked={};
+  function draw(){
+    var h='';sats.forEach(function(s,i){var left=Math.max(0,cap-(booked[s]||0));
+      h+='<button type="button" class="day'+(s===sel?' on':'')+'" data-s="'+s+'"'+(left?'':' disabled')+'><b>Sat, '+lbl(s)+'</b><small>'+(left?(i===0&&s===START?'First class!':left<=10?left+' spots left':'10:30 AM'):'Full')+'</small></button>';});
+    $('days').innerHTML=h;
+  }
+  function pickFirst(){sel=null;for(var i=0;i<sats.length;i++)if(cap-(booked[sats[i]]||0)>0){sel=sats[i];break;}draw();}
+  pickFirst();
+  fetch(API,{cache:'no-store'}).then(function(r){return r.json();}).then(function(x){cap=x.capacity||30;booked=x.booked||{};pickFirst();}).catch(function(){});
+  $('days').onclick=function(e){var b=e.target.closest('.day');if(!b||b.disabled)return;sel=b.dataset.s;draw();};
+
+  var f=$('f'),err=$('err'),btn=$('btn');
+  f.onsubmit=function(e){
+    e.preventDefault();err.textContent='';
+    var name=f.first_name.value.trim(),phone=f.phone.value.trim();
+    if(f.bot.value)return;
+    if(!sel){err.textContent='Please pick a Saturday.';return;}
+    if(!name){err.textContent='Please add your first name.';f.first_name.focus();return;}
+    if(phone.replace(/\D/g,'').length<10){err.textContent='Please add your phone number.';f.phone.focus();return;}
+    btn.disabled=true;btn.textContent='Booking…';
+    fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'book',session:sel,first_name:name,phone:phone,referrer:location.href})})
+      .then(function(r){return r.json().then(function(x){return {ok:r.ok,x:x};});})
+      .then(function(r){
+        if(!r.ok){err.textContent=(r.x&&r.x.message)||'Something went wrong. Please try again.';return;}
+        if(!r.x.already)fetch(NOTIFY,{method:'POST',keepalive:true,headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({_subject:'New Boot Camp booking: '+name+' — '+lbl(sel,true),_template:'table',_captcha:'false',Name:name,Phone:phone,Saturday:lbl(sel,true)+' · 10:30 AM',Price:'$25',Page:'kenan360.net/saturday'})}).catch(function(){});
+        $('doneWhen').textContent=lbl(sel,true)+' · 10:30 AM';f.hidden=true;$('done').hidden=false;
+      })
+      .catch(function(){err.textContent='Something went wrong. Please try again or text (848) 350-4771.';})
+      .then(function(){btn.disabled=false;btn.textContent='Book My Spot · $25';});
+  };
+})();
+</script>
+</body>
+</html>
