@@ -188,7 +188,7 @@ function vid(key) {
     const v = document.createElement("video"); v.muted = true; v.playsInline = true; v.preload = "auto"; v.dataset.src = src;
     v.addEventListener("loadeddata", () => drawStill()); vidCache[key] = v;
     // Stored clips load fully into memory so scrubbing and recording work on every phone.
-    if (src.startsWith("/_blob/")) fetch(src).then((r) => r.blob()).then((b) => { if (vidCache[key] === v) v.src = URL.createObjectURL(b); }).catch(() => { v.src = src; });
+    if (src.startsWith("/api/studio/file/")) fetch(src).then((r) => r.blob()).then((b) => { if (vidCache[key] === v) v.src = URL.createObjectURL(b); }).catch(() => { v.src = src; });
     else v.src = src;
   }
   const v = vidCache[key]; return v.readyState >= 2 ? v : null;
