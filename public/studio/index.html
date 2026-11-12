@@ -173,7 +173,7 @@ const imgCache = {}, vidCache = {};
 let loaded = false, saveTimer = null, playing = null, previewT = 2.5;
 
 function defaultEvent() { return { brandA: "KENAN", brandB: "360", presenterLine: "", title: "The Lineup", dayOfWeek: "Friday", date: "", time: "", venue: "", address: "", age: "21+" }; }
-const srcOf = (ref) => !ref ? null : ref.startsWith("asset:") ? "/_blob/" + ref.slice(6) : ref;
+const srcOf = (ref) => !ref ? null : ref.startsWith("asset:") ? "/api/studio/file/" + ref.slice(6) : ref;
 function setStatus(t, cls) { const s = $("#saveStatus"); s.textContent = t; s.className = "status " + (cls || ""); }
 
 // ---------- media loading ----------

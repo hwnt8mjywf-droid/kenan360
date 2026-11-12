@@ -40,7 +40,8 @@ async function saveFile(files, bytes, type) {
 
 export default async (req) => {
   const url = new URL(req.url);
-  const sub = url.pathname.replace(/^\/api\/studio\/?/, "");
+  // /_blob/<id> is rewritten here, but req.url keeps the original path, so map it back.
+  const sub = url.pathname.replace(/^\/_blob\//, "file/").replace(/^\/api\/studio\/?/, "");
   const docs = getStore({ name: "studio", consistency: "strong" });
   const files = getStore({ name: "studio-files", consistency: "strong" });
 
