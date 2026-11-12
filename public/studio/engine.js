@@ -63,13 +63,22 @@
   function font(P, kind, size) {
     return (kind === "body" ? "700 " : "900 italic ") + size + "px " + (kind === "body" ? P.fonts.body : P.fonts.display) + ", sans-serif";
   }
+  const measureCache = new Map();
   function measure(ctx, P, text, kind, size, tracking) {
+    const key = kind + "|" + size + "|" + (tracking || 0) + "|" + text;
+    if (measureCache.has(key)) return measureCache.get(key);
+    if (measureCache.size > 4000) measureCache.clear();
+    const v = measureRaw(ctx, P, text, kind, size, tracking); measureCache.set(key, v); return v;
+  }
+  function measureRaw(ctx, P, text, kind, size, tracking) {
     ctx.font = font(P, kind, size);
     const cond = kind === "body" ? 1 : P.fonts.condense;
     let w = 0; for (const ch of text) w += ctx.measureText(ch).width + (tracking || 0);
     if (text.length) w -= (tracking || 0);
     return w * cond;
   }
+  const charCache = new Map();
+  function charWidth(ctx, ch) { const k = ctx.font + "|" + ch; let w = charCache.get(k); if (w == null) { w = ctx.measureText(ch).width; if (charCache.size > 4000) charCache.clear(); charCache.set(k, w); } return w; }
   // Draw text centered at (x, y) with optional glow, tracking and auto-fit width.
   function text(ctx, P, str, x, y, o) {
     o = o || {};
@@ -87,7 +96,8 @@
     ctx.textBaseline = "middle"; ctx.textAlign = "left";
     let cx = -(w / cond) / 2;
     if (o.align === "left") cx = 0;
-    const draw = () => { let px = cx; for (const ch of str) { ctx.fillText(ch, px, 0); px += ctx.measureText(ch).width + track; } };
+    const adv = []; for (const ch of str) adv.push(charWidth(ctx, ch));
+    const draw = () => { let px = cx, i = 0; for (const ch of str) { ctx.fillText(ch, px, 0); px += adv[i++] + track; } };
     if (o.shadow !== false) { ctx.shadowColor = "rgba(0,0,0,0.75)"; ctx.shadowBlur = size * 0.25; ctx.shadowOffsetY = size * 0.04; ctx.fillStyle = "rgba(0,0,0,0.01)"; draw(); }
     ctx.shadowOffsetY = 0;
     if (o.glow) { ctx.shadowColor = o.glow; ctx.shadowBlur = o.glowBlur || size * 0.35; }
@@ -121,8 +131,19 @@
   }
 
   // ---------- procedural layers (credit-free backgrounds + overlays) ----------
+  const backdropCache = new Map();
   function proceduralBackdrop(ctx, P, t, seed) {
-    const W = P.width, H = P.height;
+    const key = seed + "|" + P.width + "x" + P.height;
+    let c = backdropCache.get(key);
+    if (!c && typeof document !== "undefined") {
+      c = document.createElement("canvas"); c.width = P.width; c.height = P.height;
+      staticBackdrop(c.getContext("2d"), P, seed); backdropCache.set(key, c);
+    }
+    if (c) ctx.drawImage(c, 0, 0, P.width, P.height); else staticBackdrop(ctx, P, seed);
+    crowd(ctx, P, t, seed);
+  }
+  function staticBackdrop(ctx, P, seed) {
+    const t = 0, W = P.width, H = P.height;
     const g = ctx.createLinearGradient(0, 0, 0, H);
     g.addColorStop(0, "#14030a"); g.addColorStop(0.55, "#2e0508"); g.addColorStop(1, "#060203");
     ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
@@ -147,7 +168,6 @@
       x += bw + 6;
     }
     railing(ctx, P);
-    crowd(ctx, P, t, seed);
   }
   function mountains(ctx, P, seed) {
     const W = P.width, H = P.height, R = rng(seed + 55);

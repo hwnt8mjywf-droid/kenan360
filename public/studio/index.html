@@ -206,9 +206,15 @@ function bgFor(seg, t, seekNow) {
   if (seekNow) { const ct = K360.clipTime(seg, t, v.duration); if (Math.abs(v.currentTime - ct) > 0.05) v.currentTime = ct; }
   return v;
 }
+// The on-screen preview draws at half size (a quarter of the pixels) so phones keep up;
+// exporting switches the canvas back to the full 1080x1920 before recording.
+let renderScale = 0.5;
+function setScale(k) { renderScale = k; cv.width = Math.round(P.width * k); cv.height = Math.round(P.height * k); }
+setScale(0.5);
 function drawAt(t, seekNow) {
   const st = frameState(); const s = K360.segmentAt(segs(), t);
   st.bg[s.slot] = bgFor(s, t, seekNow);
+  ctx.setTransform(renderScale, 0, 0, renderScale, 0, 0);
   K360.drawFrame(ctx, t, st);
 }
 function drawStill() { if (!playing) { drawAt(previewT, true); paintTimeline(previewT); } }
@@ -242,6 +248,7 @@ async function run({ record }) {
   let src = null;
   if (music) { src = ac.createBufferSource(); src.buffer = music; src.connect(gain); }
   let rec = null, chunks = [], mime = "";
+  setScale(record ? 1 : 0.5);
   if (record) {
     const stream = cv.captureStream(P.fps); dest.stream.getAudioTracks().forEach((tr) => stream.addTrack(tr));
     mime = ["video/mp4;codecs=avc1.640028,mp4a.40.2", "video/mp4;codecs=avc1,mp4a.40.2", "video/mp4", "video/webm;codecs=vp9,opus", "video/webm"].find((m) => window.MediaRecorder && MediaRecorder.isTypeSupported(m)) || "";
@@ -252,7 +259,7 @@ async function run({ record }) {
   }
   const t0 = ac.currentTime + 0.15;
   if (src) { gain.gain.setValueAtTime(1, t0 + P.duration - P.export.audioFadeOut); gain.gain.linearRampToValueAtTime(0, t0 + P.duration); src.start(t0); }
-  let lastSeg = null;
+  let lastSeg = null, lastDraw = -1;
   playing = { ac, src, rec };
   $("#goBtn").disabled = true; $("#playBtn").disabled = true;
   await new Promise((resolve) => {
@@ -266,6 +273,9 @@ async function run({ record }) {
         const v = vid(s.clip); if (v) { v.playbackRate = K360.clipRate(s, v.duration); v.currentTime = 0; v.play().catch(() => {}); }
         lastSeg = s;
       }
+      // phones refresh at 60-120 Hz; only draw a new frame at the video's 30 fps
+      if (t - lastDraw < 1 / P.fps - 0.004) { requestAnimationFrame(tick); return; }
+      lastDraw = t;
       drawAt(t, false); paintTimeline(t);
       if (record) $("#prog").style.width = (t / P.duration * 100) + "%";
       requestAnimationFrame(tick);
@@ -276,7 +286,7 @@ async function run({ record }) {
   try { src && src.stop(); } catch (e) {}
   let blob = null;
   if (rec) { await new Promise((r) => { rec.onstop = r; rec.stop(); }); blob = new Blob(chunks, { type: mime.split(";")[0] }); }
-  ac.close(); playing = null;
+  ac.close(); playing = null; setScale(0.5);
   $("#goBtn").disabled = false; $("#playBtn").disabled = false;
   drawStill();
   return { blob, ext: mime.startsWith("video/mp4") ? "mp4" : "webm" };
