@@ -156,6 +156,69 @@ footer a:hover{color:var(--ink)}
   .row2{grid-template-columns:1fr}
   .form-card{padding:28px 20px}
 }
+
+/* scheduler (Acuity-style) */
+.sched{padding:26px 24px 22px}
+.svc{display:flex;align-items:center;gap:14px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.svc-ic{flex:0 0 48px;height:48px;border-radius:12px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center}
+.svc-ic svg{width:24px;height:24px}
+.svc b{display:block;font-family:'Plus Jakarta Sans',sans-serif;font-size:18px;color:var(--ink);line-height:1.25}
+.svc span{font-size:13.5px;color:var(--mute)}
+.crumbs{list-style:none;display:flex;gap:6px;padding:0;margin:14px 0 16px;counter-reset:c}
+.crumbs li{flex:1;counter-increment:c;font-size:11.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--mute);padding-top:8px;border-top:3px solid var(--line);transition:color .3s,border-color .3s}
+.crumbs li:before{content:counter(c) ". "}
+.crumbs li.on{color:var(--accent);border-color:var(--accent)}
+.crumbs li.ok{color:var(--ink);border-color:var(--ink)}
+.pane{animation:pop .35s cubic-bezier(.2,.8,.2,1)}
+.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.cal-head b{font-family:'Plus Jakarta Sans',sans-serif;font-size:17px;color:var(--ink)}
+.cal-nav{width:40px;height:40px;border-radius:10px;border:1px solid var(--line2);background:#fff;color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer;transform:rotate(180deg);transition:border-color .2s,opacity .2s}
+.cal-nav.nx{transform:none}
+.cal-nav:hover:not(:disabled){border-color:var(--ink)}
+.cal-nav:disabled{opacity:.3;cursor:default}
+.cal-nav svg{width:18px;height:18px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.cal-grid.wd span{font-size:11px;font-weight:800;text-transform:uppercase;color:var(--mute);padding:6px 0}
+.day{aspect-ratio:1;max-height:48px;border-radius:50%;border:0;background:none;font:600 15px 'Manrope',sans-serif;color:#B9AEB0;display:flex;align-items:center;justify-content:center;position:relative;padding:0;margin:0 auto;width:100%}
+.day.today:after{content:"";position:absolute;bottom:5px;width:4px;height:4px;border-radius:50%;background:var(--mute)}
+.day.avail{color:var(--accent);background:rgba(200,16,46,.09);font-weight:800;cursor:pointer;transition:background .2s,color .2s,transform .15s}
+.day.avail:hover{background:rgba(200,16,46,.18)}
+.day.avail:active{transform:scale(.94)}
+.day.full{color:#B9AEB0;text-decoration:line-through}
+.day.sel{background:var(--accent)!important;color:#fff!important}
+.times{margin-top:14px;border-top:1px solid var(--line);padding-top:14px;min-height:96px}
+.times h3{font-family:'Manrope',sans-serif;font-weight:800;font-size:15px;margin:0 0 10px}
+.times-empty{margin:8px 0;font-size:14px;color:var(--mute);text-align:center}
+.slot{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:56px;padding:0 18px;border:1.5px solid var(--accent);border-radius:12px;background:#fff;color:var(--accent);font:800 17px 'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:background .2s,color .2s}
+.slot small{font:700 13px 'Manrope',sans-serif;color:var(--mute)}
+.slot:hover{background:var(--accent);color:#fff}
+.slot:hover small{color:rgba(255,255,255,.85)}
+.slot.low small{color:var(--accent)}
+.slot:disabled{border-color:var(--line2);color:#B9AEB0;cursor:default;background:#FAF6F6}
+.slot:disabled small{color:#B9AEB0}
+.tz{font-size:12px;color:var(--mute);text-align:center;margin:12px 0 0}
+.picked{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:16px}
+.picked small{display:block;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.picked b{color:var(--ink);font-size:15.5px}
+.chg,.again,.manage-link{background:none;border:0;color:var(--accent);font:800 14px 'Manrope',sans-serif;cursor:pointer;padding:8px;text-decoration:none}
+.done-pane{text-align:center;padding:10px 0 0}
+.done-pane .tick{width:64px;height:64px;border-radius:50%;background:#E6F6EC;color:#1C7A43;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.done-pane .tick svg{width:32px;height:32px}
+.done-pane h2{margin-bottom:6px}
+.done-pane .when{display:inline-block;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 18px;margin:10px 0 12px;font-weight:800;color:var(--ink)}
+.done-pane p{margin:0 0 14px}
+.addcal{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}
+.btn.sm{min-height:46px;padding:0 12px;font-size:14px;border-radius:12px}
+.done-pane .manage-link,.done-pane .again{display:block;margin:4px auto 0}
+.mh{font-size:24px;margin:0 0 4px}
+.bk{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.bk b{color:var(--ink);font-size:15px;display:block}
+.bk span{font-size:13px;color:var(--mute)}
+.bk .acts{display:flex;gap:4px;flex-shrink:0}
+.bk button{background:none;border:1px solid var(--line2);border-radius:10px;min-height:38px;padding:0 12px;font:800 13px 'Manrope',sans-serif;color:var(--ink);cursor:pointer}
+.bk button.x{color:var(--accent)}
+.resch-note{background:#FFF6DC;border:1px solid #F3DD9A;border-radius:12px;padding:10px 14px;font-size:14px;color:var(--ink);margin-bottom:12px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+@media(max-width:520px){.sched{padding:24px 16px 18px}.day{font-size:14px}.addcal{grid-template-columns:1fr}}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -167,6 +230,8 @@ footer a:hover{color:var(--ink)}
     <symbol id="ck" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="none" stroke="url(#chr)" stroke-width="1.5"/><path d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="url(#chr)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.8 2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="cal" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="16.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.9"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/><circle cx="12" cy="15" r="1.6" fill="currentColor"/></symbol>
+    <symbol id="chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="tick" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   </defs>
 </svg>
@@ -180,7 +245,7 @@ footer a:hover{color:var(--ink)}
     <a class="brand" href="/" aria-label="Kenan 360 home"><img src="data:image/webp;base64,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" alt=""><span>KENAN 360</span></a>
     <div class="nav-cta">
       <a class="btn btn-line home" href="/">Main Site</a>
-      <a class="btn btn-red" href="#signup">Reserve Spot</a>
+      <a class="btn btn-red" href="#signup">Book Now</a>
     </div>
   </div>
 </header>
@@ -204,13 +269,34 @@ footer a:hover{color:var(--ink)}
       </ul>
     </div>
 
-    <div class="form-card reveal d1" id="signup">
+    <div class="form-card sched reveal d1" id="signup">
       <span class="ribbon">$25 Drop-In</span>
-      <div id="formWrap">
-        <h2>Reserve your spot</h2>
-        <p class="sub">Pick your Saturday and you're in.</p>
-        <form id="bcForm" name="bootcamp" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
-          <input type="hidden" name="form-name" value="bootcamp">
+      <div class="svc">
+        <div class="svc-ic"><svg><use href="#cal"/></svg></div>
+        <div><b>Saturday Boot Camp</b><span>60 min &middot; $25 &middot; with Kenan</span></div>
+      </div>
+      <ol class="crumbs" id="crumbs"><li class="on">Date &amp; time</li><li>Your info</li><li>Confirmed</li></ol>
+
+      <!-- step 1: date & time -->
+      <div class="pane" id="pDate">
+        <div class="resch-note" id="reschNote" hidden></div>
+        <div class="cal-head">
+          <button class="cal-nav" id="prevM" type="button" aria-label="Previous month"><svg><use href="#chev"/></svg></button>
+          <b id="monthLbl"></b>
+          <button class="cal-nav nx" id="nextM" type="button" aria-label="Next month"><svg><use href="#chev"/></svg></button>
+        </div>
+        <div class="cal-grid wd"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
+        <div class="cal-grid days" id="days" role="grid"></div>
+        <div class="times" id="times">
+          <p class="times-empty" id="timesEmpty">Loading available Saturdays&hellip;</p>
+        </div>
+        <p class="tz">Times shown in Mountain Time (Salt Lake City)</p>
+      </div>
+
+      <!-- step 2: your info -->
+      <div class="pane" id="pInfo" hidden>
+        <div class="picked"><div><small>Your booking</small><b id="pickedLbl"></b></div><button type="button" class="chg" id="chg">Change</button></div>
+        <form id="bcForm" novalidate>
           <p style="position:absolute;left:-9999px" aria-hidden="true"><label>Leave blank<input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
           <div class="row2">
             <label class="field">First name<input name="first_name" type="text" autocomplete="given-name" required></label>
@@ -220,26 +306,37 @@ footer a:hover{color:var(--ink)}
             <label class="field">Phone<input name="phone" type="tel" autocomplete="tel" inputmode="tel" required></label>
             <label class="field">Email <span class="opt">(optional)</span><input name="email" type="email" autocomplete="email"></label>
           </div>
-          <label class="field">Which Saturday?
-            <select name="session" id="session" required></select>
-          </label>
           <label class="field">Fitness level
-            <select name="level">
-              <option>Beginner</option><option selected>Intermediate</option><option>Advanced</option>
-            </select>
+            <select name="level"><option>Beginner</option><option selected>Intermediate</option><option>Advanced</option></select>
           </label>
-          <div class="total"><span>Boot camp · 10:30 AM</span><b>$25</b></div>
+          <div class="total"><span>Boot camp &middot; 10:30 AM</span><b>$25</b></div>
           <p class="err" id="err" role="alert"></p>
-          <button class="btn btn-red" type="submit">Reserve My Spot <svg><use href="#arrow"/></svg></button>
-          <p class="fine">$25 drop-in · No membership, no commitment.</p>
+          <button class="btn btn-red" type="submit" id="bookBtn"><span>Complete Booking</span> <svg><use href="#arrow"/></svg></button>
+          <p class="fine">No payment needed now &middot; No membership, no commitment.</p>
         </form>
       </div>
-      <div class="done" id="done" aria-live="polite">
+
+      <!-- step 3: confirmed -->
+      <div class="pane done-pane" id="pDone" hidden aria-live="polite">
         <div class="tick"><svg><use href="#tick"/></svg></div>
-        <h2>You're signed up!</h2>
+        <h2 id="doneTitle">You're booked!</h2>
         <div class="when" id="doneWhen"></div>
-        <p>Your spot is saved. See you Saturday!</p>
-        <button class="again" id="again" type="button">Sign up for another Saturday</button>
+        <p id="doneMsg">Your spot is saved. See you Saturday!</p>
+        <div class="addcal">
+          <a class="btn btn-line sm" id="gcal" target="_blank" rel="noopener">Google Calendar</a>
+          <a class="btn btn-line sm" id="ical" download="kenan360-bootcamp.ics">Apple / Outlook</a>
+        </div>
+        <a class="manage-link" id="manageLink" href="#">Reschedule or cancel</a>
+        <button class="again" id="again" type="button">Book another Saturday</button>
+      </div>
+
+      <!-- manage -->
+      <div class="pane" id="pManage" hidden>
+        <h2 class="mh">Your bookings</h2>
+        <p class="sub" id="mHello"></p>
+        <div id="mList"></div>
+        <p class="err" id="mErr" role="alert"></p>
+        <button class="again" id="mNew" type="button">Book another Saturday</button>
       </div>
     </div>
   </div>
@@ -269,8 +366,8 @@ footer a:hover{color:var(--ink)}
     <div class="faq reveal">
       <details><summary>I'm a beginner. Can I join?</summary><p>Yes. Every exercise has an easier and a harder version, and Kenan will help you pick the right one.</p></details>
       <details><summary>How much does it cost?</summary><p>$25 for one session. There's no membership or contract, so you only pay for the Saturdays you come to.</p></details>
-      <details><summary>Can I come more than one Saturday?</summary><p>Of course. Sign up for each Saturday you want to attend. You can submit the form again for another date.</p></details>
-      <details><summary>What if I can't make it?</summary><p>Just text or call Kenan at (848) 350-4771 to let him know.</p></details>
+      <details><summary>Can I come more than one Saturday?</summary><p>Of course. Book each Saturday you want to attend. After you book, tap “Book another Saturday” to add more dates.</p></details>
+      <details><summary>What if I can't make it?</summary><p>Use the “Reschedule or cancel” link on your confirmation to move or cancel your spot, or text Kenan at (848) 350-4771.</p></details>
     </div>
   </div>
 </section>
@@ -280,7 +377,7 @@ footer a:hover{color:var(--ink)}
     <h2 class="reveal">See you <span style="color:var(--accent)">Saturday.</span></h2>
     <p class="reveal d1">10:30 AM, every week, starting November 14. $25 drop-in.</p>
     <div class="btns reveal d2">
-      <a class="btn btn-red" href="#signup">Reserve My Spot <svg><use href="#arrow"/></svg></a>
+      <a class="btn btn-red" href="#signup">Book My Spot <svg><use href="#arrow"/></svg></a>
       <a class="btn btn-line" href="tel:+18483504771"><svg><use href="#phone"/></svg>Call (848) 350-4771</a>
     </div>
   </div>
@@ -294,7 +391,7 @@ footer a:hover{color:var(--ink)}
   </div>
 </footer>
 
-<div class="mbar" id="mbar"><a class="btn btn-red" href="#signup">Reserve My Spot · $25</a></div>
+<div class="mbar" id="mbar"><a class="btn btn-red" href="#signup">Book Your Saturday · $25</a></div>
 
 <script>
 (function(){
@@ -309,62 +406,137 @@ footer a:hover{color:var(--ink)}
   var io='IntersectionObserver' in window?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12}):null;
   document.querySelectorAll('.reveal').forEach(function(el){io?io.observe(el):el.classList.add('in');});
 
-  /* Saturdays: every week at 10:30 AM (Mountain Time) starting Nov 14, 2026 */
-  var START='2026-11-14';
-  function mtNow(){ // current date/time in Salt Lake City
-    var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Denver',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'})
-      .formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;});
-    return {date:p.year+'-'+p.month+'-'+p.day,mins:+p.hour*60+ +p.minute};
-  }
+  /* ===== Acuity-style scheduler: every Saturday 10:30 AM (Mountain Time) from Nov 14, 2026 ===== */
+  var START='2026-11-14',WEEKS=12,API='/api/bootcamp',NOTIFY_URL='https://formsubmit.co/ajax/kenanmasic44@gmail.com';
+  var $=function(id){return document.getElementById(id);};
+  var st={cap:30,booked:{},view:null,sel:null,token:null,mode:'book',from:null};
+  function mtNow(){var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Denver',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;});return {date:p.year+'-'+p.month+'-'+p.day,mins:+p.hour*60+ +p.minute};}
   function iso(d){return d.toISOString().slice(0,10);}
-  function label(s){var d=new Date(s+'T12:00:00Z');return d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',timeZone:'UTC'});}
-  function upcoming(n){
-    var now=mtNow(),d=new Date((now.date>START?now.date:START)+'T12:00:00Z'),out=[];
+  function D(s){return new Date(s+'T12:00:00Z');}
+  function label(s,short){return D(s).toLocaleDateString('en-US',short?{weekday:'short',month:'short',day:'numeric',timeZone:'UTC'}:{weekday:'long',month:'long',day:'numeric',timeZone:'UTC'});}
+  function saturdays(){var now=mtNow(),d=D(now.date>START?now.date:START),out=[];
     while(d.getUTCDay()!==6)d.setUTCDate(d.getUTCDate()+1);
-    if(iso(d)===now.date&&now.mins>=10*60+30)d.setUTCDate(d.getUTCDate()+7); // today's class already started
-    for(var i=0;i<n;i++){out.push(iso(d));d.setUTCDate(d.getUTCDate()+7);}
-    return out;
-  }
-  var sel=document.getElementById('session');
-  sel.innerHTML=upcoming(10).map(function(s,i){return '<option value="'+s+'">'+label(s)+(i===0&&s===START?' · First class!':'')+'</option>';}).join('');
+    if(iso(d)===now.date&&now.mins>=630)d.setUTCDate(d.getUTCDate()+7);
+    for(var i=0;i<WEEKS;i++){out.push(iso(d));d.setUTCDate(d.getUTCDate()+7);}return out;}
+  var SATS=saturdays();
+  function left(s){return Math.max(0,st.cap-(st.booked[s]||0));}
+  function ym(s){return s.slice(0,7);}
 
-  /* submit: save to the CRM, Netlify Forms, and email Kenan */
-  var NOTIFY_URL='https://formsubmit.co/ajax/kenanmasic44@gmail.com';
-  var f=document.getElementById('bcForm'),err=document.getElementById('err'),btn=f.querySelector('button[type=submit]');
+  function crumbs(n){[].forEach.call($('crumbs').children,function(li,i){li.className=i<n?'ok':i===n?'on':'';});}
+  function show(id){['pDate','pInfo','pDone','pManage'].forEach(function(p){$(p).hidden=p!==id;});
+    crumbs({pDate:0,pInfo:1,pDone:2,pManage:0}[id]);$('crumbs').hidden=id==='pManage';}
+
+  function renderCal(){
+    var first=D(st.view+'-01'),y=first.getUTCFullYear(),m=first.getUTCMonth(),today=mtNow().date;
+    $('monthLbl').textContent=first.toLocaleDateString('en-US',{month:'long',year:'numeric',timeZone:'UTC'});
+    $('prevM').disabled=st.view<=ym(SATS[0]);$('nextM').disabled=st.view>=ym(SATS[SATS.length-1]);
+    var h='',pad=first.getUTCDay(),n=new Date(Date.UTC(y,m+1,0)).getUTCDate();
+    for(var i=0;i<pad;i++)h+='<span></span>';
+    for(var dd=1;dd<=n;dd++){var s=st.view+'-'+String(dd).padStart(2,'0'),isSat=SATS.indexOf(s)>-1,cls='day'+(s===today?' today':'');
+      if(isSat&&st.mode==='reschedule'&&s===st.from)isSat=false;
+      if(isSat&&left(s)>0)h+='<button type="button" class="'+cls+' avail'+(s===st.sel?' sel':'')+'" data-d="'+s+'" aria-label="'+label(s)+', available">'+dd+'</button>';
+      else if(isSat)h+='<span class="'+cls+' full" title="Full">'+dd+'</span>';
+      else h+='<span class="'+cls+'">'+dd+'</span>';}
+    $('days').innerHTML=h;
+  }
+  function renderTimes(){
+    var s=st.sel;if(!s){$('times').innerHTML='<p class="times-empty">Pick a highlighted Saturday to see times.</p>';return;}
+    var l=left(s);
+    $('times').innerHTML='<h3>'+label(s)+'</h3><button type="button" class="slot'+(l<=5?' low':'')+'" id="slot"'+(l?'':' disabled')+'>10:30 AM <small>'+(l?(l===1?'1 spot left':l+' spots left'):'Full')+'</small></button>';
+    if(l)$('slot').onclick=pickSlot;
+  }
+  $('days').addEventListener('click',function(e){var b=e.target.closest('.avail');if(!b)return;st.sel=b.dataset.d;renderCal();renderTimes();
+    if(innerWidth<760)$('times').scrollIntoView({behavior:'smooth',block:'nearest'});});
+  function shiftMonth(k){var d=D(st.view+'-01');d.setUTCMonth(d.getUTCMonth()+k);st.view=iso(d).slice(0,7);renderCal();}
+  $('prevM').onclick=function(){shiftMonth(-1);};$('nextM').onclick=function(){shiftMonth(1);};
+
+  function firstOpen(){for(var i=0;i<SATS.length;i++)if(left(SATS[i])>0&&!(st.mode==='reschedule'&&SATS[i]===st.from))return SATS[i];return null;}
+  function startDate(){st.sel=firstOpen();st.view=ym(st.sel||SATS[0]);renderCal();renderTimes();show('pDate');}
+
+  function load(){return fetch(API,{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){st.cap=d.capacity||30;st.booked=d.booked||{};}).catch(function(){});}
+
+  function pickSlot(){
+    if(st.mode==='reschedule')return doReschedule();
+    $('pickedLbl').textContent=label(st.sel)+' · 10:30 AM';$('err').textContent='';show('pInfo');
+    card.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  $('chg').onclick=function(){show('pDate');};
+
+  /* Google / Apple calendar links (10:30–11:30 AM Mountain) */
+  function utc(s,h,mi){for(var off=6;off<=7;off++){var t=new Date(s+'T'+String(h+off).padStart(2,'0')+':'+String(mi).padStart(2,'0')+':00Z');
+      var hh=+new Intl.DateTimeFormat('en-US',{timeZone:'America/Denver',hour:'2-digit',hourCycle:'h23'}).format(t);if(hh===h)return t;}return new Date(s+'T17:30:00Z');}
+  function stamp(t){return t.toISOString().replace(/[-:]/g,'').replace(/\.\d+/,'');}
+  function calLinks(s){var a=stamp(utc(s,10,30)),b=stamp(utc(s,11,30)),title='Kenan 360 Saturday Boot Camp',det='Saturday Boot Camp with Kenan. $25 drop-in. Questions: (848) 350-4771';
+    $('gcal').href='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(title)+'&dates='+a+'/'+b+'&details='+encodeURIComponent(det);
+    var ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Kenan 360//Boot Camp//EN','BEGIN:VEVENT','UID:bootcamp-'+s+'-'+Date.now()+'@kenan360.net','DTSTAMP:'+stamp(new Date()),'DTSTART:'+a,'DTEND:'+b,'SUMMARY:'+title,'DESCRIPTION:'+det,'BEGIN:VALARM','TRIGGER:-PT2H','ACTION:DISPLAY','DESCRIPTION:Boot camp at 10:30 AM','END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
+    $('ical').href='data:text/calendar;charset=utf-8,'+encodeURIComponent(ics);}
+  function manageUrl(){return location.origin+'/bootcamp?manage='+st.token;}
+  function remember(){try{localStorage.setItem('k360bc',st.token);}catch(e){}}
+  function done(s,title,msg){$('doneTitle').textContent=title;$('doneWhen').textContent=label(s)+' · 10:30 AM';$('doneMsg').textContent=msg;
+    calLinks(s);$('manageLink').href=manageUrl();show('pDone');card.scrollIntoView({behavior:'smooth',block:'center'});}
+  function email(subject,fields){fetch(NOTIFY_URL,{method:'POST',keepalive:true,headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body:JSON.stringify(Object.assign({_subject:subject,_template:'table',_captcha:'false'},fields))}).catch(function(){});}
+
+  /* book */
+  var f=$('bcForm'),err=$('err'),btn=$('bookBtn');
   function bad(el,msg){err.textContent=msg;el.closest('.field').classList.add('bad');el.focus();}
   f.addEventListener('input',function(e){var fl=e.target.closest('.field');if(fl)fl.classList.remove('bad');});
   f.addEventListener('submit',function(e){
     e.preventDefault();err.textContent='';
-    var el=f.elements,first=el.first_name.value.trim(),phone=el.phone.value.trim(),digits=phone.replace(/\D/g,'');
+    var el=f.elements,first=el.first_name.value.trim(),phone=el.phone.value.trim();
     if(!first)return bad(el.first_name,'Please add your first name.');
-    if(digits.length<10)return bad(el.phone,'Please add a phone number Kenan can text.');
+    if(phone.replace(/\D/g,'').length<10)return bad(el.phone,'Please add a phone number Kenan can text.');
     if(el['bot-field'].value)return;
-    var name=(first+' '+el.last_name.value.trim()).trim(),when=label(el.session.value)+' · 10:30 AM';
-    btn.disabled=true;btn.style.opacity='.7';btn.firstChild.textContent='Reserving… ';
-
-    var fd=new FormData(f),crm={kind:'bootcamp',referrer:location.href};fd.forEach(function(v,k){crm[k]=v;});
-    var toCrm=fetch('/api/leads',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify(crm)})
-      .then(function(r){if(!r.ok)throw 0;});
-    var toNetlify=fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(fd).toString()})
-      .then(function(r){if(!r.ok)throw 0;});
-    var toEmail=fetch(NOTIFY_URL,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({
-        _subject:'New Boot Camp sign-up: '+name+' — '+label(el.session.value),_template:'table',_captcha:'false',
-        Name:name,Phone:phone,Email:el.email.value.trim()||'—',Saturday:when,'Fitness level':el.level.value,Price:'$25 drop-in'
-      })}).then(function(r){if(!r.ok)throw 0;});
-
-    var left=3,ok=false;
-    function settle(good){ok=ok||good;if(--left)return;
-      if(ok){document.getElementById('doneWhen').textContent=when;document.getElementById('formWrap').style.display='none';
-        var d=document.getElementById('done');d.style.display='block';card.scrollIntoView({behavior:'smooth',block:'center'});}
-      else{err.textContent='Something went wrong. Please try again or text Kenan at (848) 350-4771.';}
-      btn.disabled=false;btn.style.opacity='';btn.firstChild.textContent='Reserve My Spot ';
-    }
-    [toCrm,toNetlify,toEmail].forEach(function(p){p.then(function(){settle(true);},function(){settle(false);});});
+    var s=st.sel,name=(first+' '+el.last_name.value.trim()).trim();
+    btn.disabled=true;btn.style.opacity='.7';btn.firstChild.textContent='Booking…';
+    fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'book',session:s,first_name:first,last_name:el.last_name.value.trim(),
+        phone:phone,email:el.email.value.trim(),level:el.level.value,referrer:location.href})})
+      .then(function(r){return r.json().then(function(d){return {ok:r.ok,d:d};});})
+      .then(function(x){
+        if(!x.ok){err.textContent=(x.d&&x.d.message)||'Something went wrong. Please try again.';if(x.d&&(x.d.error==='full'||x.d.error==='closed'))load().then(startDate);return;}
+        st.token=x.d.token;remember();st.booked[s]=(st.booked[s]||0)+(x.d.already?0:1);
+        if(!x.d.already)email('New Boot Camp booking: '+name+' — '+label(s),{Name:name,Phone:phone,Email:el.email.value.trim()||'—',Saturday:label(s)+' · 10:30 AM','Fitness level':el.level.value,Price:'$25 drop-in','Spots left':String(left(s))});
+        done(s,x.d.already?'You\'re already booked!':'You\'re booked!',x.d.already?'This Saturday was already on your list. See you there!':'Your spot is saved. See you Saturday!');
+      })
+      .catch(function(){err.textContent='Something went wrong. Please try again or text Kenan at (848) 350-4771.';})
+      .then(function(){btn.disabled=false;btn.style.opacity='';btn.firstChild.textContent='Complete Booking';});
   });
-  document.getElementById('again').addEventListener('click',function(){
-    document.getElementById('done').style.display='none';document.getElementById('formWrap').style.display='';
-    var i=sel.selectedIndex;sel.selectedIndex=Math.min(i+1,sel.options.length-1);sel.focus();
+  function bookNew(){st.mode='book';st.from=null;$('reschNote').hidden=true;startDate();card.scrollIntoView({behavior:'smooth',block:'start'});}
+  $('again').onclick=bookNew;$('mNew').onclick=bookNew;
+
+  /* manage: reschedule / cancel */
+  var mName='';
+  function renderManage(sessions){
+    $('mHello').textContent=(mName?'Hi '+mName.split(' ')[0]+'! ':'')+(sessions.length?'Here are your upcoming Saturdays.':'You have no upcoming bookings.');
+    $('mList').innerHTML=sessions.map(function(s){return '<div class="bk"><div><b>'+label(s,true)+'</b><span>10:30 AM · Boot Camp · $25</span></div><div class="acts"><button type="button" data-r="'+s+'">Reschedule</button><button type="button" class="x" data-c="'+s+'">Cancel</button></div></div>';}).join('');
+    show('pManage');
+  }
+  function openManage(){$('mErr').textContent='';$('mList').innerHTML='<p class="times-empty">Loading your bookings…</p>';show('pManage');
+    fetch(API+'?manage='+st.token,{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();})
+      .then(function(d){mName=d.name||'';st.cap=d.capacity||st.cap;st.booked=d.booked||st.booked;renderManage(d.sessions||[]);})
+      .catch(function(){$('mList').innerHTML='';$('mHello').textContent='We couldn\'t find that booking. Text Kenan at (848) 350-4771 for help.';});}
+  function post(body){return fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json().then(function(d){if(!r.ok)throw d;return d;});});}
+  $('mList').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
+    if(b.dataset.c){var s=b.dataset.c;if(!confirm('Cancel your spot on '+label(s)+'?'))return;b.disabled=true;
+      post({action:'cancel',token:st.token,session:s}).then(function(d){st.booked[s]=Math.max(0,(st.booked[s]||1)-1);
+          email('Boot Camp cancellation: '+d.name+' — '+label(s),{Name:d.name,Cancelled:label(s)+' · 10:30 AM'});renderManage(d.sessions);})
+        .catch(function(d){$('mErr').textContent=(d&&d.message)||'Couldn\'t cancel. Please try again.';b.disabled=false;});}
+    if(b.dataset.r){st.mode='reschedule';st.from=b.dataset.r;
+      $('reschNote').innerHTML='<span>Moving <b>'+label(st.from,true)+'</b>. Pick a new Saturday.</span><button type="button" class="chg" id="reschX">Back</button>';$('reschNote').hidden=false;
+      $('reschX').onclick=function(){st.mode='book';$('reschNote').hidden=true;openManage();};startDate();}
   });
+  function doReschedule(){var from=st.from,to=st.sel,s=$('slot');if(s)s.disabled=true;
+    post({action:'reschedule',token:st.token,from:from,to:to}).then(function(d){st.booked[from]=Math.max(0,(st.booked[from]||1)-1);st.booked[to]=(st.booked[to]||0)+1;
+        email('Boot Camp reschedule: '+d.name,{Name:d.name,From:label(from)+' · 10:30 AM',To:label(to)+' · 10:30 AM'});
+        st.mode='book';st.from=null;$('reschNote').hidden=true;done(to,'Rescheduled!','You\'re moved to the new Saturday. See you there!');})
+      .catch(function(d){alert((d&&d.message)||'Couldn\'t reschedule. Please try again.');load().then(renderCal).then(renderTimes);});}
+  $('manageLink').onclick=function(e){e.preventDefault();openManage();};
+
+  /* start */
+  var q=new URLSearchParams(location.search).get('manage');
+  if(q){st.token=q;remember();}
+  st.view=ym(SATS[0]);renderCal();
+  load().then(function(){if(q)openManage();else startDate();});
 })();
 </script>
 </body>

@@ -1,7 +1,8 @@
 # Kenan 360 website
 
 - `public/index.html` — the whole site (one file)
-- `public/bootcamp/` — Saturday Boot Camp sign-up page at kenan360.net/bootcamp
+- `public/bootcamp/` — Saturday Boot Camp booking page (Acuity-style calendar, spots left, reschedule/cancel link) at kenan360.net/bootcamp
+- `netlify/functions/bootcamp.mjs` — booking API: availability, booking, reschedule, cancel (`BOOTCAMP_CAPACITY` env var, default 30 spots)
 - `public/crm/` — lead CRM at kenan360.net/crm (Coaching Leads + Boot Camp tabs)
 - `netlify/functions/reviews.mjs` — saves and serves client reviews (stored in Netlify Blobs)
 - `netlify/functions/leads.mjs` — CRM API (needs the `CRM_PASSWORD` environment variable)
