@@ -218,7 +218,7 @@ textarea:focus,select.status:focus{border-color:var(--accent);outline:none}
   function render(){ renderViews(); renderStats(); renderChips(); renderSess(); renderPrize(); renderList(); }
 
   // Giveaway: filter by prize and pick a random winner from the entries shown.
-  var PRIZES = ['iPad', 'VIP Table + Champagne', '6 Months of KIPI Skincare'];
+  var PRIZES = ['iPad', 'VIP Table + Champagne'];
   function renderPrize(){
     var sel = $('prizef'); sel.hidden = $('pick').hidden = !isGive(); if(!isGive()) return;
     sel.innerHTML = '<option value="All">All prizes</option>' + PRIZES.map(function(p, i){
@@ -278,7 +278,7 @@ textarea:focus,select.status:focus{border-color:var(--accent);outline:none}
         '<div class="stat hot"><b>'+L.length+'</b><small>Total entries</small></div>' +
         '<div class="stat"><b>'+pc('iPad')+'</b><small>#1 iPad</small></div>' +
         '<div class="stat"><b>'+pc('VIP Table + Champagne')+'</b><small>#2 VIP Table</small></div>' +
-        '<div class="stat"><b>'+pc('6 Months of KIPI Skincare')+'</b><small>#3 KIPI Skincare</small></div>';
+        '<div class="stat"><b>'+L.filter(function(l){ return (l.prizes||[]).length > 1; }).length+'</b><small>Entered both</small></div>';
       return;
     }
     if(isBoot()){
@@ -350,7 +350,7 @@ textarea:focus,select.status:focus{border-color:var(--accent);outline:none}
         : 'Hey ' + first + ', this is Kenan from Kenan 360! Thanks for reaching out about your goals. When works for a quick free consultation?';
       var sms = 'sms:' + telHref(l.phone) + '?&body=' + encodeURIComponent(msg);
       var tags = give
-        ? (l.prizes||[]).map(function(p){ return '<span class="tag prize">#'+(PRIZES.indexOf(p)+1)+' '+esc(p)+'</span>'; }).join('') +
+        ? (l.prizes||[]).filter(function(p){ return PRIZES.indexOf(p) > -1; }).map(function(p){ return '<span class="tag prize">#'+(PRIZES.indexOf(p)+1)+' '+esc(p)+'</span>'; }).join('') +
           (l.instagram ? '<a class="tag" style="text-decoration:none" target="_blank" rel="noopener" href="https://instagram.com/'+encodeURIComponent(l.instagram)+'">@'+esc(l.instagram)+'</a>' : '') +
           [l.sms_ok ? 'OK to text' : '', l.source].filter(Boolean).map(function(x){ return '<span class="tag">'+esc(x)+'</span>'; }).join('')
         : boot

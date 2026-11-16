@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>KENAN360 Ultimate Giveaway | Enter to Win</title>
-<meta name="description" content="3 giveaways, 3 winners: win a free iPad, a VIP table + champagne, or 6 months of KIPI skincare. Free to enter, 21+.">
+<meta name="description" content="2 giveaways, 2 winners: win a free iPad or a VIP table + champagne. Free to enter, 21+.">
 <meta property="og:title" content="KENAN360 Ultimate Giveaway — Enter to Win">
-<meta property="og:description" content="iPad · VIP Table + Champagne · 6 Months of KIPI Skincare. Free to enter in 30 seconds.">
+<meta property="og:description" content="iPad · VIP Table + Champagne. Free to enter in 30 seconds.">
 <meta name="theme-color" content="#FF6A13">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -82,7 +82,7 @@ input.f::placeholder{color:#A39389;font-weight:500}
   <div class="hero">
     <span class="tag">Free to enter · 21+</span>
     <h1>The Ultimate <em>Giveaway</em></h1>
-    <p class="sub">3 giveaways · <span>3 winners</span></p>
+    <p class="sub">2 giveaways · <span>2 winners</span></p>
     <p class="sub" id="when" style="font-weight:600;color:var(--body);font-size:15px;margin-top:6px"></p>
   </div>
 
@@ -96,9 +96,6 @@ input.f::placeholder{color:#A39389;font-weight:500}
         <label class="prize on"><input type="checkbox" name="prize" value="VIP Table + Champagne" checked>
           <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2h4v4l2 3v12a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V9l2-3z"/><path d="M8 13h8"/><path d="M19 2l1 2M21.5 5.5l-2 .5M5 2L4 4M2.5 5.5l2 .5"/></svg></span>
           <span class="pt"><small>Giveaway #2</small><b>VIP TABLE + CHAMPAGNE</b></span><span class="ck">✓</span></label>
-        <label class="prize on"><input type="checkbox" name="prize" value="6 Months of KIPI Skincare" checked>
-          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="14" height="12" rx="3"/><path d="M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/><path d="M9 15h6"/></svg></span>
-          <span class="pt"><small>Giveaway #3</small><b>6 MONTHS OF KIPI SKINCARE</b></span><span class="ck">✓</span></label>
       </div>
 
       <span class="lbl">Your info</span>
@@ -135,7 +132,7 @@ input.f::placeholder{color:#A39389;font-weight:500}
     <ul>
       <li><b>No purchase necessary.</b> A purchase does not improve your chances of winning.</li>
       <li>Open to legal residents of the U.S. who are <b>21 or older</b>.</li>
-      <li>Three separate giveaways with <b>one winner each</b>: (1) an iPad, (2) a VIP table with champagne at a KENAN360 night, (3) a 6-month supply of KIPI skincare. Enter any or all.</li>
+      <li>Two separate giveaways with <b>one winner each</b>: (1) an iPad, (2) a VIP table with champagne at a KENAN360 night. Enter one or both.</li>
       <li>One entry per person per giveaway. Entering more than once doesn't add entries.</li>
       <li id="ruleDraw">Winners are picked at random from all eligible entries and contacted by text at the number entered.</li>
       <li>Prizes can't be exchanged for cash. The VIP table must be used at a KENAN360 event; alcohol is served only to guests 21+ with valid ID.</li>
@@ -205,7 +202,7 @@ input.f::placeholder{color:#A39389;font-weight:500}
   };
 
   $('share').onclick = function(){
-    var data = { title: 'KENAN360 Ultimate Giveaway', text: 'Win an iPad, a VIP table + champagne, or 6 months of KIPI skincare. Free to enter:', url: location.origin + '/giveaway' };
+    var data = { title: 'KENAN360 Ultimate Giveaway', text: 'Win an iPad or a VIP table + champagne. Free to enter:', url: location.origin + '/giveaway' };
     if (navigator.share) { navigator.share(data).catch(function(){}); return; }
     var t = data.text + ' ' + data.url;
     (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function(){ $('share').textContent = 'Link copied!'; }).catch(function(){ prompt('Copy this link:', data.url); });

@@ -80,7 +80,7 @@ export async function saveBootcamp(store, d) {
 
 // Giveaway entries: one per phone number (key "g_<digits>"). Entering again
 // updates the prizes picked and contact details.
-export const GIVEAWAY_PRIZES = ["iPad", "VIP Table + Champagne", "6 Months of KIPI Skincare"];
+export const GIVEAWAY_PRIZES = ["iPad", "VIP Table + Champagne"];
 export async function saveGiveaway(store, d) {
   const name = clean(d.name, 80);
   const phone = clean(d.phone, 30);
