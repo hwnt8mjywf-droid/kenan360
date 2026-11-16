@@ -26,9 +26,9 @@ export async function saveLead(store, d) {
   // Leads saved before keys were phone-based are keyed by submission id; check their phones too.
   const { blobs } = await store.list();
   for (const b of blobs) {
-    if (/^(_|p_|b_)/.test(b.key)) continue;
+    if (/^(_|p_|b_|g_)/.test(b.key)) continue;
     const l = await store.get(b.key, { type: "json" });
-    if (l && l.kind !== "bootcamp" && phoneDigits(l.phone) === digits) return "duplicate";
+    if (l && l.kind !== "bootcamp" && l.kind !== "giveaway" && phoneDigits(l.phone) === digits) return "duplicate";
   }
 
   const now = new Date().toISOString();
@@ -72,6 +72,41 @@ export async function saveBootcamp(store, d) {
       id: key, kind: "bootcamp", created_at: now, last_signup: now, name, phone, email: clean(d.email, 120),
       sessions: [session], level: clean(d.level, 40), source: sourceOf(d.referrer),
       status: "Signed up", notes: [], updated_at: now,
+    },
+    { onlyIfNew: true }
+  );
+  return "saved";
+}
+
+// Giveaway entries: one per phone number (key "g_<digits>"). Entering again
+// updates the prizes picked and contact details.
+export const GIVEAWAY_PRIZES = ["iPad", "VIP Table + Champagne", "6 Months of KIPI Skincare"];
+export async function saveGiveaway(store, d) {
+  const name = clean(d.name, 80);
+  const phone = clean(d.phone, 30);
+  const digits = phoneDigits(phone);
+  const prizes = (Array.isArray(d.prizes) ? d.prizes : []).filter((p) => GIVEAWAY_PRIZES.includes(p));
+  if (!name || digits.length < 10 || !prizes.length || d.age21 !== true) return "invalid";
+
+  const key = "g_" + digits;
+  const now = new Date().toISOString();
+  const ig = clean(d.instagram, 40).replace(/^@+/, "");
+  const existing = await store.get(key, { type: "json" });
+  if (existing) {
+    existing.prizes = [...new Set([...(existing.prizes || []), ...prizes])];
+    existing.name = name;
+    existing.email = clean(d.email, 120) || existing.email;
+    existing.instagram = ig || existing.instagram;
+    existing.updated_at = now;
+    await store.setJSON(key, existing);
+    return "updated";
+  }
+  await store.setJSON(
+    key,
+    {
+      id: key, kind: "giveaway", created_at: now, last_signup: now, name, phone, email: clean(d.email, 120),
+      instagram: ig, prizes, sms_ok: d.sms_ok === true, source: sourceOf(d.referrer),
+      status: "Entered", notes: [], updated_at: now,
     },
     { onlyIfNew: true }
   );

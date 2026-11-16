@@ -1,5 +1,6 @@
 // Lead CRM API used by /crm, the website's lead form and the boot camp page.
-// POST   /api/leads        -> new lead, or { kind: "bootcamp", session } for a boot camp sign-up (public)
+// POST   /api/leads        -> new lead, { kind: "bootcamp", session } for a boot camp sign-up,
+//                             or { kind: "giveaway", prizes, age21 } for a giveaway entry (public)
 // GET    /api/leads        -> all leads and boot camp sign-ups, newest first
 // PATCH  /api/leads        -> { id, status? } | { id, addNote } | { id, deleteNote }
 // DELETE /api/leads?id=... -> remove one lead
@@ -7,14 +8,16 @@
 // POST needs it in the x-crm-key header; if it isn't set, the CRM is open.
 import { getStore } from "@netlify/blobs";
 import { timingSafeEqual, createHash, randomUUID } from "node:crypto";
-import { saveLead, saveBootcamp } from "../lib/save-lead.mjs";
+import { saveLead, saveBootcamp, saveGiveaway } from "../lib/save-lead.mjs";
 
 const json = (obj, status = 200) =>
   new Response(JSON.stringify(obj), { status, headers: { "content-type": "application/json", "cache-control": "no-store" } });
 
 const STATUSES = ["New", "Contacted", "Consult booked", "Client", "Not interested"];
 const BOOTCAMP_STATUSES = ["Signed up", "Confirmed", "Paid", "Attended", "No-show", "Cancelled"];
-const kindOf = (l) => (l.kind === "bootcamp" ? "bootcamp" : "lead");
+const GIVEAWAY_STATUSES = ["Entered", "Winner", "Contacted", "Prize claimed"];
+const kindOf = (l) => (l.kind === "bootcamp" || l.kind === "giveaway" ? l.kind : "lead");
+const statusesFor = (k) => (k === "bootcamp" ? BOOTCAMP_STATUSES : k === "giveaway" ? GIVEAWAY_STATUSES : STATUSES);
 
 // Leads from before the CRM existed live in the LEAD_SEED environment variable
 // (kept out of this public repo). Each one is added once.
@@ -54,6 +57,14 @@ export default async (req) => {
     let d;
     try { d = await req.json(); } catch { return json({ error: "bad request" }, 400); }
     if (d["bot-field"]) return json({ ok: true });
+    if (d.kind === "giveaway") {
+      const r = await saveGiveaway(store, {
+        name: [d.first_name, d.last_name].filter(Boolean).join(" "), phone: d.phone, email: d.email,
+        instagram: d.instagram, prizes: d.prizes, age21: d.age21, sms_ok: d.sms_ok, referrer: d.referrer,
+      });
+      console.log("crm: website giveaway", r);
+      return json({ ok: r !== "invalid", already: r === "updated" }, r === "invalid" ? 400 : 201);
+    }
     const result = d.kind === "bootcamp"
       ? await saveBootcamp(store, {
           name: [d.first_name, d.last_name].filter(Boolean).join(" "), phone: d.phone, email: d.email,
@@ -75,7 +86,7 @@ export default async (req) => {
     const leads = items.filter(Boolean).map(normalize)
       .map((l) => ({ ...l, kind: kindOf(l) }))
       .sort((a, b) => ((a.last_signup || a.created_at) < (b.last_signup || b.created_at) ? 1 : -1));
-    return json({ leads, statuses: STATUSES, bootcampStatuses: BOOTCAMP_STATUSES });
+    return json({ leads, statuses: STATUSES, bootcampStatuses: BOOTCAMP_STATUSES, giveawayStatuses: GIVEAWAY_STATUSES });
   }
 
   if (req.method === "PATCH") {
@@ -86,7 +97,7 @@ export default async (req) => {
     if (!raw) return json({ error: "not found" }, 404);
     const lead = normalize(raw);
     if (d.status !== undefined) {
-      const allowed = kindOf(lead) === "bootcamp" ? BOOTCAMP_STATUSES : STATUSES;
+      const allowed = statusesFor(kindOf(lead));
       if (!allowed.includes(d.status)) return json({ error: "bad status" }, 400);
       lead.status = d.status;
     }

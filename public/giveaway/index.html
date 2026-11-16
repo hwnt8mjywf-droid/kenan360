@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KENAN360 Ultimate Giveaway | Enter to Win</title>
+<meta name="description" content="3 giveaways, 3 winners: win a free iPad, a VIP table + champagne, or 6 months of KIPI skincare. Free to enter, 21+.">
+<meta property="og:title" content="KENAN360 Ultimate Giveaway — Enter to Win">
+<meta property="og:description" content="iPad · VIP Table + Champagne · 6 Months of KIPI Skincare. Free to enter in 30 seconds.">
+<meta name="theme-color" content="#FF6A13">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,800;1,900&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#16110E;--body:#5B4F48;--mute:#857870;--line:#F1E4DB;--line2:#E3CFC1;--or:#FF6A13;--or2:#E5560A;--soft:#FFF5EE}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:#fff;color:var(--body);font:500 16px/1.55 'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.page{max-width:520px;margin:0 auto;padding:22px 18px 48px}
+.brand{text-align:center;font:900 italic 22px 'Barlow Condensed',sans-serif;letter-spacing:.12em;color:var(--ink);margin-bottom:18px}
+.brand b{color:var(--or)}
+.hero{text-align:center;margin-bottom:22px}
+.tag{display:inline-block;background:var(--or);color:#fff;font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;padding:6px 12px;border-radius:8px}
+h1{font:900 italic clamp(46px,14vw,66px)/.9 'Barlow Condensed',sans-serif;color:var(--ink);margin:14px 0 10px;text-transform:uppercase;letter-spacing:-.01em}
+h1 em{font-style:inherit;color:var(--or);display:block}
+.sub{font-size:17px;font-weight:700;color:var(--ink);margin:0}
+.sub span{color:var(--or)}
+.prizes{display:grid;gap:10px;margin:0 0 22px}
+.prize{position:relative;display:flex;align-items:center;gap:14px;border:2px solid var(--line2);border-radius:18px;padding:14px 14px;background:#fff;cursor:pointer;transition:border-color .2s,background .2s,transform .15s;-webkit-tap-highlight-color:transparent;user-select:none}
+.prize:active{transform:scale(.985)}
+.prize input{position:absolute;opacity:0;pointer-events:none}
+.ic{flex:0 0 58px;height:58px;border-radius:14px;background:var(--soft);display:grid;place-items:center;color:var(--or);transition:background .2s,color .2s}
+.ic svg{width:30px;height:30px}
+.pt{flex:1;min-width:0}
+.pt small{display:block;font:900 italic 15px 'Barlow Condensed',sans-serif;letter-spacing:.06em;color:var(--or)}
+.pt b{display:block;font:900 italic 25px/1 'Barlow Condensed',sans-serif;color:var(--ink)}
+.ck{flex:0 0 28px;height:28px;border-radius:50%;border:2px solid var(--line2);display:grid;place-items:center;color:#fff;font-size:15px;font-weight:800;transition:all .2s}
+.prize.on{border-color:var(--or);background:var(--soft)}
+.prize.on .ic{background:var(--or);color:#fff}
+.prize.on .ck{background:var(--or);border-color:var(--or)}
+.prize:not(.on) .ck{color:transparent}
+.card{border:1px solid var(--line);border-radius:20px;padding:20px 18px;box-shadow:0 26px 54px -32px rgba(120,45,5,.4)}
+.lbl{display:block;font-size:13px;font-weight:800;color:var(--ink);margin:0 0 10px;letter-spacing:.02em}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input.f{display:block;width:100%;height:52px;padding:0 14px;margin-bottom:10px;border:1px solid var(--line2);border-radius:12px;background:#FFFBF8;font:600 16px 'Manrope',sans-serif;color:var(--ink);-webkit-appearance:none;transition:border-color .2s,box-shadow .2s}
+input.f:focus{outline:none;border-color:var(--or);box-shadow:0 0 0 3px rgba(255,106,19,.18)}
+input.f::placeholder{color:#A39389;font-weight:500}
+.chk{display:flex;gap:11px;align-items:flex-start;font-size:14px;font-weight:600;color:var(--ink);margin:6px 0 10px;cursor:pointer;line-height:1.4}
+.chk input{flex:0 0 22px;width:22px;height:22px;margin:0;accent-color:var(--or)}
+.chk.opt{color:var(--body);font-weight:500;font-size:13px}
+.btn{width:100%;min-height:60px;border:0;border-radius:14px;background:var(--or);color:#fff;font:900 italic 25px 'Barlow Condensed',sans-serif;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;margin-top:6px;box-shadow:0 14px 28px -14px rgba(255,106,19,.8);transition:background .2s,transform .15s}
+.btn:hover{background:var(--or2)}
+.btn:active{transform:scale(.99)}
+.btn:disabled{opacity:.7}
+.err{color:#C8102E;font-size:14px;font-weight:700;margin:4px 0 6px}
+.err:empty{display:none}
+.fine{text-align:center;font-size:13px;color:var(--mute);margin:12px 0 0}
+.done{text-align:center;padding:10px 0;animation:pop .45s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes pop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+.done .ok{width:66px;height:66px;border-radius:50%;background:var(--or);color:#fff;font-size:32px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 12px 26px -10px rgba(255,106,19,.8)}
+.done h2{font:900 italic 44px/1 'Barlow Condensed',sans-serif;color:var(--ink);margin:0 0 8px;text-transform:uppercase}
+.done p{margin:0 0 6px}
+.done ul{list-style:none;padding:0;margin:12px 0 16px;display:grid;gap:6px}
+.done li{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-weight:800;color:var(--ink)}
+.share{width:100%;min-height:52px;border:2px solid var(--ink);border-radius:14px;background:#fff;color:var(--ink);font:800 16px 'Manrope',sans-serif;cursor:pointer;margin-top:6px}
+.rules{margin-top:22px;border-top:1px solid var(--line);padding-top:16px;font-size:12.5px;color:var(--mute);line-height:1.55}
+.rules b{color:var(--body)}
+.rules summary{cursor:pointer;font-weight:800;color:var(--body);font-size:13px;list-style:none}
+.rules summary::-webkit-details-marker{display:none}
+.rules summary:after{content:" +";color:var(--or)}
+.rules[open] summary:after{content:" –"}
+.rules ul{padding-left:18px;margin:10px 0 0}
+.rules li{margin-bottom:4px}
+.call{display:block;text-align:center;margin-top:18px;color:var(--or2);font-weight:800;text-decoration:none}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="brand">KENAN<b>360</b></div>
+
+  <div class="hero">
+    <span class="tag">Free to enter · 21+</span>
+    <h1>The Ultimate <em>Giveaway</em></h1>
+    <p class="sub">3 giveaways · <span>3 winners</span></p>
+    <p class="sub" id="when" style="font-weight:600;color:var(--body);font-size:15px;margin-top:6px"></p>
+  </div>
+
+  <div class="card">
+    <form id="f" novalidate>
+      <span class="lbl">Tap the prizes you want to win</span>
+      <div class="prizes" id="prizes">
+        <label class="prize on"><input type="checkbox" name="prize" value="iPad" checked>
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2.5"/><path d="M11 18.5h2"/></svg></span>
+          <span class="pt"><small>Giveaway #1</small><b>WIN A FREE iPAD</b></span><span class="ck">✓</span></label>
+        <label class="prize on"><input type="checkbox" name="prize" value="VIP Table + Champagne" checked>
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2h4v4l2 3v12a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V9l2-3z"/><path d="M8 13h8"/><path d="M19 2l1 2M21.5 5.5l-2 .5M5 2L4 4M2.5 5.5l2 .5"/></svg></span>
+          <span class="pt"><small>Giveaway #2</small><b>VIP TABLE + CHAMPAGNE</b></span><span class="ck">✓</span></label>
+        <label class="prize on"><input type="checkbox" name="prize" value="6 Months of KIPI Skincare" checked>
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="9" width="14" height="12" rx="3"/><path d="M7 9V6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/><path d="M9 15h6"/></svg></span>
+          <span class="pt"><small>Giveaway #3</small><b>6 MONTHS OF KIPI SKINCARE</b></span><span class="ck">✓</span></label>
+      </div>
+
+      <span class="lbl">Your info</span>
+      <div class="two">
+        <input class="f" name="first_name" placeholder="First name" autocomplete="given-name" required>
+        <input class="f" name="last_name" placeholder="Last name" autocomplete="family-name" required>
+      </div>
+      <input class="f" name="phone" type="tel" inputmode="tel" placeholder="Phone number" autocomplete="tel" required>
+      <input class="f" name="instagram" placeholder="Instagram @ (optional)" autocomplete="off" autocapitalize="none" spellcheck="false">
+      <input class="f" name="email" type="email" inputmode="email" placeholder="Email (optional)" autocomplete="email">
+      <input name="bot" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+
+      <label class="chk"><input type="checkbox" name="age21"> I'm 21 or older and agree to the giveaway rules below.</label>
+      <label class="chk opt"><input type="checkbox" name="sms_ok" checked> Text me about KENAN360 events and offers. Msg &amp; data rates may apply. Reply STOP to opt out.</label>
+
+      <p class="err" id="err" role="alert"></p>
+      <button class="btn" id="btn" type="submit">Enter the Giveaway</button>
+      <p class="fine">Free · No purchase necessary · Takes 30 seconds</p>
+    </form>
+
+    <div class="done" id="done" hidden>
+      <div class="ok">✓</div>
+      <h2>You're entered!</h2>
+      <p>You're in the running for:</p>
+      <ul id="doneList"></ul>
+      <p id="doneWhen" style="font-weight:700;color:var(--ink)"></p>
+      <p>Winners get a text from Kenan. Good luck!</p>
+      <button class="share" id="share" type="button">Share with a friend</button>
+    </div>
+  </div>
+
+  <details class="rules">
+    <summary>Giveaway rules</summary>
+    <ul>
+      <li><b>No purchase necessary.</b> A purchase does not improve your chances of winning.</li>
+      <li>Open to legal residents of the U.S. who are <b>21 or older</b>.</li>
+      <li>Three separate giveaways with <b>one winner each</b>: (1) an iPad, (2) a VIP table with champagne at a KENAN360 night, (3) a 6-month supply of KIPI skincare. Enter any or all.</li>
+      <li>One entry per person per giveaway. Entering more than once doesn't add entries.</li>
+      <li id="ruleDraw">Winners are picked at random from all eligible entries and contacted by text at the number entered.</li>
+      <li>Prizes can't be exchanged for cash. The VIP table must be used at a KENAN360 event; alcohol is served only to guests 21+ with valid ID.</li>
+      <li>Void where prohibited. Not sponsored by or affiliated with Apple or Instagram.</li>
+    </ul>
+  </details>
+
+  <a class="call" href="tel:+18483504771">Questions? Call or text (848) 350-4771</a>
+</div>
+
+<script>
+(function(){
+  // ── Edit these when the details are set ──
+  var DRAW_DATE = '';          // e.g. 'Friday, Dec 5' — shown on the page and in the rules
+  var VENUE = 'Sunday School · SLC';
+  var ENTRY_DEADLINE = '';     // e.g. 'Dec 5 at 9 PM' — optional
+
+  var API = '/api/leads', NOTIFY = 'https://formsubmit.co/ajax/kenanmasic44@gmail.com', $ = function(i){ return document.getElementById(i); };
+
+  if (DRAW_DATE) {
+    $('when').textContent = 'Winners announced ' + DRAW_DATE + ' · ' + VENUE;
+    $('doneWhen').textContent = 'Winners announced ' + DRAW_DATE + ' at ' + VENUE + '.';
+    $('ruleDraw').textContent = 'Enter by ' + (ENTRY_DEADLINE || DRAW_DATE) + '. Winners are picked at random from all eligible entries on ' + DRAW_DATE + ' and contacted by text at the number entered. You don’t need to be present to win.';
+  } else {
+    $('when').textContent = 'Winners announced live at KENAN360 · ' + VENUE;
+  }
+
+  var prizes = $('prizes');
+  prizes.addEventListener('change', function(e){
+    if (e.target.name === 'prize') e.target.closest('.prize').classList.toggle('on', e.target.checked);
+  });
+
+  var f = $('f'), err = $('err'), btn = $('btn');
+  f.onsubmit = function(e){
+    e.preventDefault(); err.textContent = '';
+    if (f.bot.value) return;
+    var picked = [].slice.call(f.querySelectorAll('input[name=prize]:checked')).map(function(x){ return x.value; });
+    var first = f.first_name.value.trim(), last = f.last_name.value.trim(), phone = f.phone.value.trim();
+    var email = f.email.value.trim(), ig = f.instagram.value.trim().replace(/^@+/, '').replace(/.*instagram\.com\//i, '').replace(/[/?].*$/, '');
+    if (!picked.length) { err.textContent = 'Tap at least one prize to enter.'; return; }
+    if (!first) { err.textContent = 'Please add your first name.'; f.first_name.focus(); return; }
+    if (!last) { err.textContent = 'Please add your last name.'; f.last_name.focus(); return; }
+    if (phone.replace(/\D/g, '').length < 10) { err.textContent = 'Please add your phone number so we can text you if you win.'; f.phone.focus(); return; }
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = 'That email doesn’t look right.'; f.email.focus(); return; }
+    if (!f.age21.checked) { err.textContent = 'You must be 21+ and agree to the rules to enter.'; return; }
+
+    btn.disabled = true; btn.textContent = 'Entering…';
+    fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+      kind: 'giveaway', first_name: first, last_name: last, phone: phone, email: email, instagram: ig,
+      prizes: picked, age21: true, sms_ok: f.sms_ok.checked, referrer: location.href
+    }) })
+      .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(x){ return { ok: r.ok, x: x }; }); })
+      .then(function(r){
+        if (!r.ok) { err.textContent = 'Something went wrong. Please check your info and try again.'; return; }
+        fetch(NOTIFY, { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({
+          _subject: (r.x.already ? 'Giveaway entry updated: ' : 'New giveaway entry: ') + first + ' ' + last,
+          _template: 'table', _captcha: 'false', Name: first + ' ' + last, Phone: phone, Email: email || '—',
+          Instagram: ig ? '@' + ig : '—', Prizes: picked.join(', '), 'OK to text': f.sms_ok.checked ? 'Yes' : 'No', Page: 'kenan360.net/giveaway'
+        }) }).catch(function(){});
+        $('doneList').innerHTML = picked.map(function(p){ return '<li></li>'; }).join('');
+        [].forEach.call($('doneList').children, function(li, i){ li.textContent = picked[i]; });
+        f.hidden = true; $('done').hidden = false;
+        $('done').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      })
+      .catch(function(){ err.textContent = 'Something went wrong. Please try again or text (848) 350-4771.'; })
+      .then(function(){ btn.disabled = false; btn.textContent = 'Enter the Giveaway'; });
+  };
+
+  $('share').onclick = function(){
+    var data = { title: 'KENAN360 Ultimate Giveaway', text: 'Win an iPad, a VIP table + champagne, or 6 months of KIPI skincare. Free to enter:', url: location.origin + '/giveaway' };
+    if (navigator.share) { navigator.share(data).catch(function(){}); return; }
+    var t = data.text + ' ' + data.url;
+    (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function(){ $('share').textContent = 'Link copied!'; }).catch(function(){ prompt('Copy this link:', data.url); });
+  };
+})();
+</script>
+</body>
+</html>
