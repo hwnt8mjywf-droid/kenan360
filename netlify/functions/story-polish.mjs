@@ -24,8 +24,13 @@ Reply with JSON only: {"options":[{"kicker":"...","text":"..."},{"kicker":"...",
 
 export default async (req) => {
   if (req.method !== "POST") return json({ error: "POST only" }, 405);
-  if (!process.env.ANTHROPIC_BASE_URL && !process.env.ANTHROPIC_API_KEY)
+  if (!process.env.ANTHROPIC_BASE_URL && !process.env.ANTHROPIC_API_KEY) {
+    console.log("story-polish: AI unavailable", {
+      gatewayKey: !!process.env.NETLIFY_AI_GATEWAY_KEY,
+      gatewayUrl: !!process.env.NETLIFY_AI_GATEWAY_URL,
+    });
     return json({ error: "ai_unavailable" }, 503);
+  }
 
   const body = await req.json().catch(() => ({}));
   const raw = String(body.text ?? "").replace(/[\u0000-\u0008\u000b-\u001f]/g, " ").trim().slice(0, 600);
@@ -47,6 +52,7 @@ export default async (req) => {
     if (!options.length) return json({ error: "empty_result" }, 502);
     return json({ options });
   } catch (e) {
+    console.log("story-polish error", String(e).slice(0, 300));
     return json({ error: "ai_error", detail: String(e).slice(0, 200) }, 502);
   }
 };
