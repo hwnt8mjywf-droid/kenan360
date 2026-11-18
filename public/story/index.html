@@ -65,7 +65,15 @@
   .modal img{max-height:72vh;max-width:90vw;border-radius:12px}
   .modal p{color:#fff;font-size:14px;text-align:center;max-width:320px;line-height:1.5}
   .modal p b{color:var(--o)}
-  .file{font-size:13px}
+  .pics{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .pic{position:relative;width:74px;height:74px;border-radius:6px;overflow:hidden;border:2px solid var(--line)}
+  .pic canvas{width:100%;height:100%;object-fit:cover;display:block}
+  .pic button{position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;background:rgba(8,8,8,.8);color:#fff;font-size:13px;line-height:22px;text-align:center}
+  .addpic{width:74px;height:74px;border-radius:6px;border:2px dashed var(--o);display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--o);font-weight:800;font-size:11px;letter-spacing:1px;cursor:pointer;background:#fff7f1}
+  .addpic b{font-size:26px;line-height:1}
+  .addpic input{display:none}
+  input[type=range]{width:100%;accent-color:var(--o)}
+  .tpls{grid-template-columns:repeat(4,1fr)}
 </style>
 </head>
 <body>
@@ -96,14 +104,26 @@
     <div class="card">
       <h2>2. Pick a <em>look</em></h2>
       <div class="tpls" id="tpls"></div>
-      <div id="photoRow" style="display:none;margin-top:12px">
-        <label class="lbl">Background photo</label>
-        <input type="file" accept="image/*" id="photo" class="file">
+    </div>
+
+    <div class="card">
+      <h2>3. Add <em>pictures</em></h2>
+      <div class="pics" id="pics">
+        <label class="addpic" id="addpic"><b>+</b>PHOTO<input type="file" accept="image/*" id="photo" multiple></label>
+      </div>
+      <div class="small">Up to 3 photos. Tap × to remove.</div>
+      <div id="picOpts" style="display:none">
+        <label class="lbl">Where the photo goes</label>
+        <div class="seg" id="photoMode"><button data-v="bg">Background</button><button data-v="top">On top</button><button data-v="bottom">On bottom</button></div>
+        <label class="lbl">Photo position <span style="font-weight:600;letter-spacing:0;text-transform:none;color:#999">(slide to show faces)</span></label>
+        <input type="range" id="focus" min="0" max="100" value="40">
+        <label class="lbl">Darken photo</label>
+        <input type="range" id="dim" min="0" max="90" value="55">
       </div>
     </div>
 
     <div class="card">
-      <h2>3. Fine <em>tune</em></h2>
+      <h2>4. Fine <em>tune</em></h2>
       <label class="lbl">Label on top (optional)</label>
       <input type="text" id="kicker" placeholder="e.g. FREE GAME">
       <label class="lbl">Signature</label>
@@ -136,18 +156,17 @@
 const O='#FF6A00',K='#080808',W='#FFFFFF';
 const $=id=>document.getElementById(id);
 const RAW="Fellas free game! Start being in a relationship when your nervous system is ready to carry love !!!\n\nDon't let that get over your heads";
-const state={text:'',kicker:'',sig:'@KENAN360',tpl:'rooftop',align:'left',pos:'mid',caps:true,logo:true,photo:null};
+const state={text:'',kicker:'',sig:'@KENAN360',tpl:'rooftop',align:'left',pos:'mid',caps:true,logo:true,photos:[],photoMode:'bg',focus:40,dim:55};
 
 const TEMPLATES=[
   {id:'rooftop',name:'Rooftop'},
   {id:'vip',name:'VIP'},
   {id:'blaze',name:'Blaze'},
-  {id:'clean',name:'Clean'},
-  {id:'photo',name:'Photo'}
+  {id:'clean',name:'Clean'}
 ];
 
 /* ---------- persistence (best effort) ---------- */
-function persist(){try{const s={...state};delete s.photo;localStorage.setItem('k360story',JSON.stringify(s))}catch(e){}}
+function persist(){try{const s={...state};delete s.photos;localStorage.setItem('k360story',JSON.stringify(s))}catch(e){}}
 function restore(){try{const s=JSON.parse(localStorage.getItem('k360story')||'null');if(s)Object.assign(state,s)}catch(e){}}
 
 /* ---------- text parsing ---------- */
@@ -198,9 +217,43 @@ function layout(ctx,paras,maxW,maxH){
 }
 
 /* ---------- drawing helpers ---------- */
-function cover(ctx,img,W,H){
-  const r=Math.max(W/img.width,H/img.height),w=img.width*r,h=img.height*r;
-  ctx.drawImage(img,(W-w)/2,(H-h)/2,w,h);
+function cover(ctx,img,x,y,w,h){
+  const r=Math.max(w/img.width,h/img.height),iw=img.width*r,ih=img.height*r;
+  const fy=(state.focus??40)/100;
+  ctx.drawImage(img,x+(w-iw)/2,y+(h-ih)*fy,iw,ih);
+}
+function rrect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function drawBgPhotos(ctx,t){
+  const W=1080,H=1920,ph=state.photos,n=ph.length,d=(state.dim??55)/100;
+  ctx.save();
+  if(n===1)cover(ctx,ph[0],0,0,W,H);
+  else{ // stacked strips
+    const sh=H/n;ph.forEach((im,i)=>{ctx.save();ctx.beginPath();ctx.rect(0,i*sh,W,sh);ctx.clip();cover(ctx,im,0,i*sh,W,sh);ctx.restore();});
+  }
+  if(t==='blaze'){ctx.fillStyle=`rgba(255,106,0,${Math.min(.95,d+.2)})`;ctx.fillRect(0,0,W,H);}
+  else if(t==='clean'){ctx.fillStyle=`rgba(255,255,255,${Math.min(.95,d+.25)})`;ctx.fillRect(0,0,W,H);}
+  else{
+    const g=ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,`rgba(8,8,8,${d*.8})`);g.addColorStop(.5,`rgba(8,8,8,${d})`);g.addColorStop(1,`rgba(8,8,8,${Math.min(.97,d+.3)})`);
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    glow(ctx,1000,1850,800,'rgba(255,106,0,A)',.25);
+  }
+  if(t==='vip'){ctx.strokeStyle=O;ctx.lineWidth=4;ctx.strokeRect(48,48,W-96,H-96);}
+  if(t==='clean'){ctx.fillStyle=O;ctx.fillRect(0,0,W,22);ctx.fillRect(0,H-22,W,22);}
+  ctx.restore();
+}
+function drawCards(ctx,t,y0,h,padX){
+  const W=1080,ph=state.photos,n=ph.length,gap=22,x0=padX,w=W-padX*2,cw=(w-gap*(n-1))/n;
+  ph.forEach((im,i)=>{
+    const x=x0+i*(cw+gap);
+    ctx.save();
+    ctx.shadowColor='rgba(0,0,0,.45)';ctx.shadowBlur=t==='clean'?20:40;ctx.shadowOffsetY=10;
+    rrect(ctx,x,y0,cw,h,20);ctx.fillStyle='#111';ctx.fill();
+    ctx.shadowColor='transparent';
+    ctx.save();rrect(ctx,x,y0,cw,h,20);ctx.clip();cover(ctx,im,x,y0,cw,h);ctx.restore();
+    rrect(ctx,x,y0,cw,h,20);ctx.lineWidth=6;ctx.strokeStyle=t==='blaze'?K:O;ctx.stroke();
+    ctx.restore();
+  });
 }
 function glow(ctx,x,y,r,color,a){
   const g=ctx.createRadialGradient(x,y,0,x,y,r);
@@ -217,7 +270,7 @@ function spaced(ctx,text,x,y,spacing,alignC){
 function drawBg(ctx,t){
   const W=1080,H=1920;
   ctx.save();
-  if(t==='rooftop'||(t==='photo'&&!state.photo)){
+  if(t==='rooftop'){
     ctx.fillStyle=K;ctx.fillRect(0,0,W,H);
     glow(ctx,980,1750,1100,'rgba(255,106,0,A)',.38);
     glow(ctx,80,120,700,'rgba(255,106,0,A)',.12);
@@ -239,12 +292,6 @@ function drawBg(ctx,t){
   }else if(t==='clean'){
     ctx.fillStyle='#FFFFFF';ctx.fillRect(0,0,W,H);
     ctx.fillStyle=O;ctx.fillRect(0,0,W,22);ctx.fillRect(0,H-22,W,22);
-  }else if(t==='photo'){
-    ctx.fillStyle=K;ctx.fillRect(0,0,W,H);cover(ctx,state.photo,W,H);
-    const g=ctx.createLinearGradient(0,0,0,H);
-    g.addColorStop(0,'rgba(8,8,8,.55)');g.addColorStop(.45,'rgba(8,8,8,.45)');g.addColorStop(1,'rgba(8,8,8,.92)');
-    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
-    glow(ctx,1000,1850,800,'rgba(255,106,0,A)',.28);
   }
   ctx.restore();
 }
@@ -258,18 +305,25 @@ function palette(t){
 function render(canvas,t){
   const ctx=canvas.getContext('2d');const W=1080,H=1920;
   ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,W,H);
-  drawBg(ctx,t);
+  const hasPics=state.photos.length>0, mode=hasPics?state.photoMode:'none';
+  if(mode==='bg')drawBgPhotos(ctx,t); else drawBg(ctx,t);
   const p=palette(t), SK=0.16;
   const padX=t==='vip'?130:96;
+  const card=mode==='top'||mode==='bottom';
+  const cardH=state.photos.length>1?760:820;
+  if(mode==='top')drawCards(ctx,t,150,cardH,padX);
+  if(mode==='bottom')drawCards(ctx,t,H-260-cardH,cardH,padX);
   const maxW=W-padX*2-60;
   const paras=parse(state.text||' ',state.caps);
   const kick=(state.kicker||'').trim();
   const kickH=kick?150:0;
-  const maxH=1180-kickH;
+  const region = mode==='top'? [150+cardH+70, H-300] : mode==='bottom'? [170, H-260-cardH-60] : null;
+  const maxH=(region? region[1]-region[0] : 1180)-kickH;
   const L=layout(ctx,paras,maxW,maxH)||{size:54,lh:56,gap:30,sp:14,lines:[],total:0};
   const blockH=L.total+kickH;
-  let top = state.pos==='top'?260 : state.pos==='low'? H-360-blockH : (H-blockH)/2-60;
-  top=Math.max(170,top);
+  let top;
+  if(region){ top=region[0]+Math.max(0,(region[1]-region[0]-blockH)/2); }
+  else{ top = state.pos==='top'?260 : state.pos==='low'? H-360-blockH : (H-blockH)/2-60; top=Math.max(170,top); }
   const cy=top+blockH/2;
   const center=state.align==='center';
 
@@ -330,7 +384,7 @@ function render(canvas,t){
     spaced(ctx,sig.toUpperCase(),c?W/2:padX+4,fy+(state.logo?52:0),6,c);
   }
   // orange accent line
-  if(t==='rooftop'||t==='photo'){
+  if(t==='rooftop'&&!card){
     ctx.fillStyle=O;
     const lw=120;ctx.fillRect(center?(W-lw)/2:padX,top-46,lw,8);
   }
@@ -345,10 +399,9 @@ function buildTpls(){
     const b=document.createElement('button');b.className='tpl'+(state.tpl===t.id?' on':'');b.dataset.id=t.id;
     const c=document.createElement('canvas');c.width=216;c.height=384;
     b.appendChild(c);b.appendChild(document.createTextNode(t.name));
-    b.onclick=()=>{state.tpl=t.id;document.querySelectorAll('.tpl').forEach(x=>x.classList.toggle('on',x.dataset.id===t.id));$('photoRow').style.display=t.id==='photo'?'block':'none';draw();};
+    b.onclick=()=>{state.tpl=t.id;document.querySelectorAll('.tpl').forEach(x=>x.classList.toggle('on',x.dataset.id===t.id));draw();};
     box.appendChild(b);
   });
-  $('photoRow').style.display=state.tpl==='photo'?'block':'none';
 }
 let thumbTimer;
 function drawThumbs(){
@@ -455,10 +508,39 @@ function seg(id,key){
     b.onclick=()=>{state[key]=b.dataset.v;el.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));draw();};
   });
 }
-$('photo').onchange=e=>{
-  const f=e.target.files&&e.target.files[0];if(!f)return;
-  const img=new Image();img.onload=()=>{state.photo=img;draw();};img.src=URL.createObjectURL(f);
+function loadPhoto(file){
+  return new Promise(res=>{
+    const url=URL.createObjectURL(file),img=new Image();
+    img.onload=()=>{
+      const m=1600,r=Math.min(1,m/Math.max(img.width,img.height));
+      const c=document.createElement('canvas');c.width=Math.round(img.width*r);c.height=Math.round(img.height*r);
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);res(c);
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);res(null);};
+    img.src=url;
+  });
+}
+function renderPics(){
+  const box=$('pics');box.querySelectorAll('.pic').forEach(e=>e.remove());
+  state.photos.forEach((c,i)=>{
+    const d=document.createElement('div');d.className='pic';
+    const t=document.createElement('canvas');t.width=148;t.height=148;
+    const x=t.getContext('2d'),r=Math.max(148/c.width,148/c.height);x.drawImage(c,(148-c.width*r)/2,(148-c.height*r)/2,c.width*r,c.height*r);
+    const b=document.createElement('button');b.textContent='×';b.setAttribute('aria-label','Remove photo');
+    b.onclick=()=>{state.photos.splice(i,1);renderPics();draw();};
+    d.appendChild(t);d.appendChild(b);box.insertBefore(d,$('addpic'));
+  });
+  $('addpic').style.display=state.photos.length>=3?'none':'flex';
+  $('picOpts').style.display=state.photos.length?'block':'none';
+}
+$('photo').onchange=async e=>{
+  const files=[...(e.target.files||[])].slice(0,3-state.photos.length);
+  for(const f of files){const c=await loadPhoto(f);if(c)state.photos.push(c);}
+  e.target.value='';renderPics();draw();
 };
+$('focus').oninput=e=>{state.focus=+e.target.value;draw();};
+$('dim').oninput=e=>{state.dim=+e.target.value;draw();};
+
 
 /* ---------- save / copy ---------- */
 function dataURLtoBlob(u){const [h,d]=u.split(',');const bin=atob(d);const arr=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);return new Blob([arr],{type:'image/png'});}
@@ -494,11 +576,11 @@ $('copy').onclick=async()=>{
 /* ---------- init ---------- */
 restore();
 if(!state.text)state.text=RAW;
-if(state.photo&&!(state.photo instanceof Image))state.photo=null;
-if(state.tpl==='photo')state.tpl='rooftop';
+state.photos=[];if(!TEMPLATES.some(t=>t.id===state.tpl))state.tpl='rooftop';
 $('txt').value=state.text;$('kicker').value=state.kicker||'';$('sig').value=state.sig||'';
 $('caps').checked=state.caps;$('showLogo').checked=state.logo;
-seg('align','align');seg('pos','pos');
+seg('align','align');seg('pos','pos');seg('photoMode','photoMode');
+$('focus').value=state.focus??40;$('dim').value=state.dim??55;renderPics();
 buildTpls();
 render($('main'),state.tpl);
 Promise.all([document.fonts.load('100px Anton'),document.fonts.load('800 40px Inter'),document.fonts.load('600 26px Inter')])
